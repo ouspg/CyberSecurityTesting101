@@ -79,11 +79,11 @@ More information about Arch Linux is available [here.](https://ouspg.org/resourc
 
 You are allowed, and even recommended to use trending LLMs (chatbots) for finding information. They can be particularly useful in explaining and generating some command-line interface commands, for example. Or for getting a high-level overview of some topics, when they can be very accurate. They are also good at generating formatted data.
 
-* You are **not allowed** to use them as a reference. Find a real one. 
-* You are **not allowed** to trust them blindly. Double-check what they say, if you are making strong statements or assumptions. 
+* In general, you are **not allowed** to use them as a reference. Find a real one. But if you really must, you can cite them as *personal communication*.
+* You are **not allowed** to trust them blindly. Double-check what they say, if you are making statements or assumptions. 
 * You are **not allowed** to copy their output directly to your written answers, especially in essays.
 * You **are allowed** to use them for rephrasing, brainstorming, for grammar corrections, but please **mention if you do so**. 
-* We **recommend including/exporting the chat history** for transparency if you have used it significantly. 
+* We **recommend including/exporting the chat history** for transparency if you have used them significantly. Check if the platform supports this directly by generating an archived URL about the conversation history.
 * Whenever you submit information (making a prompt, asking something), **remember that data is likely stored forever**, now owned by the platform owner and likely used to train the LLM further. 
 
 Overall, LLMs can be very useful but one should not develop too high a dependency on them.
@@ -91,6 +91,9 @@ Overall, LLMs can be very useful but one should not develop too high a dependenc
   * If you are new to some CLI application, read the manual first and later use LLM to generate the commands.
   * If you are new to some technical protocol and intend to use it a lot, read the official introduction and maybe use LLM later.
   * The list goes on. You should always know where to find the original information.
+
+
+Otherwise, use the official guidelines of the University of Oulu about the [usage of AI](https://www.oulu.fi/en/for-students/studying-university/guidelines-use-artificial-intelligence-education).
 
 ## License
 
