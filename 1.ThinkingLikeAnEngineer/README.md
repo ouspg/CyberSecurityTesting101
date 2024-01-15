@@ -54,7 +54,7 @@ Can you think "outside of the box"?
 
 
 In the first task, let's explore the Linux operating system as a whole and its subcomponents.
-It also works as a short introduction to Linux in this course. 
+It also works as a short introduction to Linux in this course, with focus on just getting used to command line. 
 
 On the second task, we try to familiarise ourselves with the information security tool ecosystem and understand, how we might be able to improve our skills on using them. 
 
@@ -69,9 +69,9 @@ Task #|Points|Description|
 -----|:---:|-----------|
 Task 1 | 3 | Getting started with Linux (Return as Moodle exam)
 Task 2 | 1 | Security analysis and tool usability (Return to GitHub)
-Task 3 | 1 | Linux and threat modelling (Return to GitHub)
+Task 3 | 1 | "Hacker mindset" and threat modeling (Return to GitHub)
 
-Task 1A is worth of 1 point.
+Each part in task 1 is worth 1 point. 
 
 Later tasks will require more time investment when compared to the previous tasks to acquire the relative amount of points. 
 
