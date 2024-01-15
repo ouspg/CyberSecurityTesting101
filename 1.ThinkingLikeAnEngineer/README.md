@@ -220,11 +220,12 @@ graph TD
 Docker does a bit more by adding extra isolation and control mechanisms, but we can ignore it for now. 
 Basically, we will have a new restricted and different Linux environment from your host virtual machine.
 
+It is pre-installed on the provided virtual machine, but if you are using something other, follow the steps [here.](https://docs.docker.com/engine/install/)
 
 Run the command 
 
 ```cmd
-docker run --user=root -it ghcr.io/ouspg/cybersecuritytesting101:week1 bash
+docker run --rm --user=root -it ghcr.io/ouspg/cybersecuritytesting101:week1 bash
 ```
 
 From your current terminal, you are operating now in the exercise environment.
@@ -289,7 +290,7 @@ After you have figured out the username, you can run the container as this user.
 At first, exit the container by writing `exit`, and then get back by running the previous command with the identified hex string as a specific user. e.g.
 
 ```cmd
-docker run --user=aa0c0de4bfc9b346c3 -it ghcr.io/ouspg/cybersecuritytesting101:week1 bash
+docker run --rm --user=aa0c0de4bfc9b346c3 -it ghcr.io/ouspg/cybersecuritytesting101:week1 bash
 ```
 Alternatively, use the following inside the container to switch to another user:
 
