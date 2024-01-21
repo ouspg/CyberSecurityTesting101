@@ -138,7 +138,7 @@ Explore short introductions from the separate files.
 When considering which one to use, CLI interface of `john` might be more flexible for providing more configurations and customisations which can get you started.
 `hashcat` is less flexible, but focuses on raw performance instead.
 
-Note that since efficient password breaking requires the use of GPU, installing tools to your host machine would give the most performance, unless you mess around with PCI pass-through with virtualisation.
+Note that since efficient password breaking requires the use of GPU, installing tools to your host machine would give the most performance, unless you mess around with PCI pass-through with virtualisation (not recommended, this time).
 
 > MD5 hashing algorithm is used as an example because of its historical value. It should not be used any more, *at all*.
 
@@ -192,6 +192,8 @@ It is recommended to generate the whole wordlist based on the previous protocol,
 Also, you need to install `argon2` C implementation as well in Arch Linux; run `sudo pacman -Sy argon2` before Python bindings work.
 
 Note:`hashcat` [does not support argon2 yet](https://github.com/hashcat/hashcat/issues/1966). 
+
+`john` works for this task, but it might be a little slower than Python implementation, for example.  Check also the `--fork` parameter.
 
 ## Task 3: Lifetime of the passwords
 
