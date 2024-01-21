@@ -183,11 +183,16 @@ It is also designed to be resistant for GPU accelerated and paralleled computing
 
 > In the Moodle exam, you need to crack the Kalle's password.
 >  
-> The provided `argon2` configuration is **not the best practice**; it designed so that you will notice how slow it can be while also making it possible to crack the password in rather short duration.
+> The provided `argon2` hash configuration is **not the best practice**; it designed so that you will notice how slow it can be on relatively low count wordlist, while also making it possible to crack the password in rather short duration.
 
-It is recommended to generate the whole wordlist based on the previous protocol, and then brute force with the final word list. Python implementation with `argon2-cffi` library might be the best choice here. 
+It is recommended to generate the whole wordlist based on the previous protocol, and then brute force with the final word list. Python implementation with [`argon2-cffi`](https://argon2-cffi.readthedocs.io/en/stable/index.html) library might be the best choice here.  In that case, you need to configure `argon2` hasher correctly based on the given parameters in Moodle exam.
+  * On a 6-year-old laptop, brute forcing should take around 20 minutes at maximum.
+  * Make sure that you are able to correctly crack passwords before letting it run longer durations.
+
+Also, you need to install `argon2` C implementation as well in Arch Linux; run `sudo pacman -Sy argon2` before Python bindings work.
 
 Note:`hashcat` [does not support argon2 yet](https://github.com/hashcat/hashcat/issues/1966). 
+
 ## Task 3: Lifetime of the passwords
 
 > Return this task to GitHub
