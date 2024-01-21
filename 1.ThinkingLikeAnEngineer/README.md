@@ -1,6 +1,6 @@
 # 1. Thinking like a (Linux) engineer 
 
-> The first exercise will focus on the component-based mindset in engineering and security testing, and getting started with Linux operating system, with cyber security flavor.
+> The first exercise will focus on the component-based mindset in engineering and security testing, and getting started with Linux operating system, with cyber security flavour.
 
 An in-depth understanding of the high-level architectures, relationships, key technologies, and interoperability of digital systems is one essential skill when working with cyber security.
 These systems can be large and complex and be very difficult to understand; the diversity of technology stacks and protocols, the integration of legacy and new systems, and the ever-evolving nature of the technology, with constantly evolving new cyber threats.
