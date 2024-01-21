@@ -16,8 +16,8 @@ You are not required to do tasks in order, but especially the first one is impor
 | Task # | Points | Description |
 | ---- | :--: | ---- |
 | Task 1 | 1 | The concept of information entropy (Moodle exam) |
-| Task 2 | 3 | Practical brute forcing of passwords (Moodle exam) |
-| Task 3 | 1 | The lifetime of the password (essay)  |
+| Task 2 | 2 | Practical brute forcing of passwords (Moodle exam) |
+| Task 3 | 2 | The lifetime of the password (essay)  |
 | Task 4 | 1 | Keypad (Bonus task) |
 
 Later tasks will require more time investment when compared to the previous tasks to acquire the relative amount of points. 
@@ -121,15 +121,73 @@ The given value is based on [the avarage and variance of NVIDIA GeForce RTX 4090
 
 # Task 2: Practical brute forcing
 
-So far, we have thought breaking passwords just in theoretical level. How about in practices?
-Let's try out with a couple popular tools.  You can choose yourself which methods to use, even just using Python works to a certain degree, but the use of specific tools is recommended. 
+> Return tasks as Moodle exam
+
+So far, we have thought breaking passwords just in theoretical level. Let's try out in practice with a couple popular tools. 
+
+Typically, passwords are hashed into the system's database to make it more difficult to obtain the original value; it means that we need to compute hashes to crack the passwords.
+
+You can choose yourself which methods to use, even just using Python works to a certain degree, but the use of specific tools is recommended. 
 
 Particularly, we can use either **hashcat** [^11] or **John the Ripper** [^12].
 
-Explore short introductions below.
+Explore short introductions from the separate files.
+ * [`hashcat`](hashcat.md)
+ * [`john`](john.md)
 
-## Task 2C) Brute forcing against key stretching algorithms
+When considering which one to use, CLI interface of `john` might be more flexible for providing more configurations and customisations which can get you started.
+`hashcat` is less flexible, but focuses on raw performance instead.
 
+Note that since efficient password breaking requires the use of GPU, installing tools to your host machine would give the most performance, unless you mess around with PCI pass-through with virtualisation.
+
+> MD5 hashing algorithm is used as an example because of its historical value. It should not be used any more, *at all*.
+
+## Task 2A) MD5 and integer values
+
+The first task is rather simple.
+In the Moodle exam, you will be provided a MD5 hash of the integer value. You know that these integers have exactly 8 digits. 
+
+> Brute force the integer and return the result.
+
+## Task 2B) MD5 with masking and salt
+
+Having only numbers in the passwords is hopefully not used much in practice.
+Having a mix of both letters and digits is much more common.
+
+By knowing some requirements of how the password was created, can we still brute force it efficiently?
+
+At first part, use [masking attack](https://hashcat.net/wiki/doku.php?id=mask_attack) to reduce the possibilities of the password.
+
+Secondly, we additionally add [salt](https://en.wikipedia.org/wiki/Salt_(cryptography)) for the password with the combination of masking.
+
+## Task 2C) `argon2` and brute forcing with wordlists
+
+Kalle found this [nice wordlist from the internet](https://github.com/danielmiessler/SecLists/blob/master/Passwords/2023-200_most_used_passwords.txt) which lists top 200 passwords from 2023, according to some unknown factors.
+
+Kalle *misunderstood* the list a bit; he thought that these *are the best passwords* from 2023. 
+And he decided to develop *even more secure method* to create passwords for his services, based on the list.
+
+He decided to implement the following “secure” password generation protocol, and put it public to the internet:
+ * Select one digit in random
+ * Select one word from the list in random
+ * Select one digit in random
+
+Overall, the password characters should be generated in order based on the previous.
+
+However, the worst happened and some service leaked the Kalle's password, with hash and corresponding salt. 
+
+While Kalle's protocol was not secure, ***not at all***, the underlying service's technical choices made it harder to crack the password.
+
+The service used one state-of-the-art hashing function [argon2](https://en.wikipedia.org/wiki/Argon2), which is [key derivation function](https://en.wikipedia.org/wiki/Key_derivation_function.); in practice is it calculates the hash many times to slow the brute forcing process which also improving weaker passwords in other means.
+It is also designed to be resistant for GPU accelerated and paralleled computing.
+
+> In the Moodle exam, you need to crack the Kalle's password.
+>  
+> The provided `argon2` configuration is **not the best practice**; it designed so that you will notice how slow it can be while also making it possible to crack the password in rather short duration.
+
+It is recommended to generate the whole wordlist based on the previous protocol, and then brute force with the final word list. Python implementation with `argon2-cffi` library might be the best choice here. 
+
+Note:`hashcat` [does not support argon2 yet](https://github.com/hashcat/hashcat/issues/1966). 
 ## Task 3: Lifetime of the passwords
 
 > Return this task to GitHub
@@ -181,7 +239,7 @@ sequenceDiagram
 On high level, it describes about the traditional process when user creates and uses passwords, until there is a need to change it because of the breach or some other information leak.
 It also notes some good practices on using the passwords on the systems. 
 
-> Your task is to write an essay of 1-2 A4 pages (400-800 words) about the *best practises of using and managing passwords and implementing password-based systems, considering the whole lifetime of the passwords.*
+> Your task is to write an essay of two A4 pages (around 800 words) about the *best practises of using and managing passwords and implementing password-based systems, considering the entire lifetime of the passwords.*
 
 > Consider the following when writing the essay:
 
@@ -189,7 +247,8 @@ It also notes some good practices on using the passwords on the systems.
  * What is the role of using hashes **and salts** in the passwords? Check [rainbow table attack](https://en.wikipedia.org/wiki/Rainbow_table).
  * Explore state-of-the-art hashing functions in password context.
 	 * Why we use key stretching algorithms when we hash passwords?
-	 * Consider the importance of resistance of hashing functions in password context (e.g. you do not get benefit for calculating the hashes on graphic card).
+	 * Consider the importance of resistance of hashing functions in password context (e.g. you do not get benefit for calculating the hashes on graphic card, memory usage and parallelism).
+	 * Usually acceptable user experience delay for interactive authentication is `<=500ms`. `bcrypt` is considered to be better choice than `argon2` in that area. Why? It might be that there isn't single good algorithm for everything.
 * Check services like [';--have i been pwned?](https://haveibeenpwned.com/Passwords). Why are they very important? Why you should never re-use your passwords?
 	* Explore the impact of credential stuffing and dictionary attacks by using the breach data.
 	* What is the impact of 2FA/MFA for entropy and in combat for credential stuffing?

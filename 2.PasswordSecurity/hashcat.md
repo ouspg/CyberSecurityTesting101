@@ -3,7 +3,8 @@
 ![](img/hashcat.png)
 
 
-You can find all information in this document and more on `hashcat` own [documentation](https://hashcat.net/wiki/doku.php?id=hashcat)
+This document will work as introduction to `hashcat`.
+You can find more information from `hashcat`'s own [documentation.](https://hashcat.net/wiki/doku.php?id=hashcat)
 
 To install `hashcat` for the provided Arch Linux virtual machine, run the command
 
@@ -32,7 +33,7 @@ Usage: hashcat [options]... hash|hashfile|hccapxfile [dictionary|mask|directory]
 
 ## Cracking with `hashcat`
 
-The most basic `hashcat` command for "cracking" `md5` hashes is
+The most basic `hashcat` command for “cracking” `md5` hashes is
 
 ```sh
 hashcat “insert_hash_here” -m 0 -a 3
@@ -48,11 +49,11 @@ The first one is for “pure”  `md5` hashes, and `-m 10` is for salted `md5` h
 There are many other options for other cryptographic functions.
 
 Option `-a` specifies the attack type `hashcat` runs trying to figure out the hash.
-We will only be using –a 3 which means brute force attack, where `hashcat` just tries to hash different inputs to figure out the hash. 
+We will be using `–a 3` as an example, which means brute force attack, where `hashcat` just tries to hash different inputs to figure out the hash. 
 Other attack options include using common
 password wordlist.
 
-Example result for `ef775988943825d2871e1cfa75473ec0`:
+Example result for command `hashcat -m0 -a3 ef775988943825d2871e1cfa75473ec0`:
 ```sh
 ef775988943825d2871e1cfa75473ec0:99999999
 
@@ -78,7 +79,7 @@ Hardware.Mon.SMC.: Fan0: 0%, Fan1: 0%
 Hardware.Mon.#1..: Util:100%
 ```
 
-Tells us that hash `ef775988943825d2871e1cfa75473ec0` belongs to value `9999999`.
+The output tells us that hash `ef775988943825d2871e1cfa75473ec0` belongs to value `9999999`.
 
 ## Cracking the characters
 
