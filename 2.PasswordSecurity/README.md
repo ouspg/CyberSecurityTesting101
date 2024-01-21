@@ -17,7 +17,7 @@ You are not required to do tasks in order, but especially the first one is impor
 | ---- | :--: | ---- |
 | Task 1 | 1 | The concept of information entropy (Moodle exam) |
 | Task 2 | 2 | Practical brute forcing of passwords (Moodle exam) |
-| Task 3 | 2 | The lifetime of the password  |
+| Task 3 | 2 | The lifetime of the password (essay)  |
 | Task 4 | 1 | Keypad (Bonus task) |
 
 Later tasks will require more time investment when compared to the previous tasks to acquire the relative amount of points. 
@@ -47,11 +47,12 @@ If the secret has high entropy, the probability distribution will give very litt
 You can learn more about information theory from [Khan Academy](https://www.khanacademy.org/computing/computer-science/informationtheory/moderninfotheory/v/information-entropy), for example. 
 
 One of the most common secrets is passwords, which are the focus of this week. Overall, entropy is important in cryptography, but we don't handle that in this course. 
-## Task 1A): Entropy and passwords.
+## Entropy and passwords
 
 The general probability of guessing the password is based on the amount of overall combinations, or *permutations*.
-This assumes that you know how the requirements for password generation.
+This assumes that you know the requirements for password generation.
 In that case, we can calculate the permutations of the password as follows:
+
 $$
 \begin{align*}
 \text{Permutations} &= N^L \\
@@ -79,19 +80,51 @@ $$
 \end{align*}
 $$
 
+So, we can calculate the entropy. But what these entropy values mean by itself? Alone, not much. They need to be compared to the state-of-the-art brute forcing processes. 
+As the computational resources increase over the time, so does the recommended amount of entropy for a strong password. 
+Overall, the required level of entropy also depends on the threat model.
 
 
+If we look at the [Hive Systems password table (2023)](https://www.hivesystems.io/blog/are-your-passwords-in-the-green), 12 characters long passwords with lowercase and uppercase characters along with numbers might be the minimum for the generic threat model with *53 year brute force time*.
 
-If we look at the [Hive Systems password table](https://www.hivesystems.io/blog/are-your-passwords-in-the-green), 
+That is based on using **RTX 4090 with 12 GPUs against MD5** hashes. 
 
+This will get us $12 \times \log_2 62 = 71.45$ bits of entropy.
 
-Entropy calculation can be hard to do correctly, i
+Entropy calculation can be hard to do correctly; the above applies only for *truly randomly generated values*.
 
-## Task 1B): Regexes and time.
+> Following exercises can be done either just with paper, calculator or Python, for example. 
+### Task 1A) Entropy and regex patterns
+
+On the Moodle exam, you will be given Perl influenced [regex](https://en.wikipedia.org/wiki/Regular_expression) describing the password requirements.
+You will also be given an example password.
+
+> Calculate the entropy in 2 decimal accuracy.
+
+See, for example, [https://regex101.com/](https://regex101.com/) to better understand regexes. 
+
+### Task 1B) Entropy and minimum requirements
+
+One fascinating thing about minimum requirements in passwords is that they actually *reduce the entropy of the passwords*, assuming that the length and allowed characters stays the same.
+
+Certain password policies, while intended to increase security, might inadvertently lower the overall entropy of the password space by imposing restrictions that limit the total number of possible password combinations.
+Minimum requirements might still increase the security, if the expected human behaviour is prone to create passwords which are easier to guess with [dictionary attack](https://en.wikipedia.org/wiki/Dictionary_attacks). 
+Entropy estimation can be hard when also noting that. 
+
+In practice, this means that from the total combinations, we just remove or do not note those which are not possible any more, because of the minimum requirements.
+
+You are given a regex pattern and value how many passwords can be broken in a second.
+
+> Calculate the time in seconds for guaranteed guess of this password with minimum requirements.
+
+The given value is based on [the avarage and variance of NVIDIA GeForce RTX 4090 breaking MD5 hashes.](https://openbenchmarking.org/test/pts/hashcat&eval=8b64c180eac0ce4c97f0d73d774dbb6161bedb5f#metrics)
+
+# Task 2: Practical brute forcing
+
 
 ## Task 2C) Brute forcing against key stretching algorithms
 
-## Task 3: Lifetime of the password
+## Task 3: Lifetime of the passwords
 
 > Return this task to GitHub
 
@@ -124,7 +157,7 @@ sequenceDiagram
     end
     Note over Service,ExternalService: Compromise Check
     loop Regular Interval
-        User->>+ExternalService: Check Password Status
+        User->>+ExternalService: Check Password Status for Compromise
         ExternalService->>+User: Report Status
         alt Password Compromised
             Service->>+User: Notify to Change Password
@@ -139,22 +172,24 @@ sequenceDiagram
  
 ```
 
-On high level, it describes about the traditional process when user creates and uses passwords, until there is a need to change it because of the breach.
-It also notes some best practices on using the passwords on the systems. 
+On high level, it describes about the traditional process when user creates and uses passwords, until there is a need to change it because of the breach or some other information leak.
+It also notes some good practices on using the passwords on the systems. 
 
-> Your task is to write an essay of 1-2 A4 pages (400-800 words) about the *best practises of using passwords, implementing password-based systems, and managing the passwords over their lifetime.*
+> Your task is to write an essay of 1-2 A4 pages (400-800 words) about the *best practises of using and managing passwords and implementing password-based systems, considering the whole lifetime of the passwords.*
 
 > Consider the following when writing the essay:
 
- * On task 1, we thought about entropy. Why it is very difficult to measure entropy for human-created passwords?
- * What is the role of using hashes **and salts** in the passwords? Check also [rainbow table attack](https://en.wikipedia.org/wiki/Rainbow_table).
- * Explore state-of-the-art hashing functions.
+ * On task 1, we thought about entropy. Why it is very difficult to measure entropy for human-generated passwords? And that entropy is probably very low.
+ * What is the role of using hashes **and salts** in the passwords? Check [rainbow table attack](https://en.wikipedia.org/wiki/Rainbow_table).
+ * Explore state-of-the-art hashing functions in password context.
 	 * Why we use key stretching algorithms when we hash passwords?
 	 * Consider the importance of resistance of hashing functions in password context (e.g. you do not get benefit for calculating the hashes on graphic card).
 * Check services like [';--have i been pwned?](https://haveibeenpwned.com/Passwords). Why are they very important? Why you should never re-use your passwords?
+	* Explore the impact of credential stuffing and dictionary attacks by using the breach data
 * Consider the dilemma of usability and security in the password context.  Good passwords are typically hard to remember.  Are password managers with automatic breach notifications the solution?
+* When thinking of your threat model, breaking the password is not about the time, rather, how much money you have to invest for parallel computing
 
-You can also get ideas from the [xkcd comic about password strength](https://imgs.xkcd.com/comics/password_strength_2x.png).
+You can also get ideas from the [xkcd comic about password strength](https://xkcd.com/936/).
 
 # Task 4: Keypad (bonus task)
 
