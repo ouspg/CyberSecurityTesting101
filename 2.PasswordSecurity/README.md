@@ -16,8 +16,8 @@ You are not required to do tasks in order, but especially the first one is impor
 | Task # | Points | Description |
 | ---- | :--: | ---- |
 | Task 1 | 1 | The concept of information entropy (Moodle exam) |
-| Task 2 | 2 | Practical brute forcing of passwords (Moodle exam) |
-| Task 3 | 2 | The lifetime of the password (essay)  |
+| Task 2 | 3 | Practical brute forcing of passwords (Moodle exam) |
+| Task 3 | 1 | The lifetime of the password (essay)  |
 | Task 4 | 1 | Keypad (Bonus task) |
 
 Later tasks will require more time investment when compared to the previous tasks to acquire the relative amount of points. 
@@ -101,7 +101,7 @@ You will also be given an example password.
 
 > Calculate the entropy in 2 decimal accuracy.
 
-See, for example, [https://regex101.com/](https://regex101.com/) to better understand regexes. 
+See, for example, [https://regex101.com/](https://regex101.com/)and [https://regexr.com/](https://regexr.com/) to better understand regexes. 
 
 ### Task 1B) Entropy and minimum requirements
 
@@ -121,6 +121,12 @@ The given value is based on [the avarage and variance of NVIDIA GeForce RTX 4090
 
 # Task 2: Practical brute forcing
 
+So far, we have thought breaking passwords just in theoretical level. How about in practices?
+Let's try out with a couple popular tools.  You can choose yourself which methods to use, even just using Python works to a certain degree, but the use of specific tools is recommended. 
+
+Particularly, we can use either **hashcat** [^11] or **John the Ripper** [^12].
+
+Explore short introductions below.
 
 ## Task 2C) Brute forcing against key stretching algorithms
 
@@ -185,9 +191,10 @@ It also notes some good practices on using the passwords on the systems.
 	 * Why we use key stretching algorithms when we hash passwords?
 	 * Consider the importance of resistance of hashing functions in password context (e.g. you do not get benefit for calculating the hashes on graphic card).
 * Check services like [';--have i been pwned?](https://haveibeenpwned.com/Passwords). Why are they very important? Why you should never re-use your passwords?
-	* Explore the impact of credential stuffing and dictionary attacks by using the breach data
+	* Explore the impact of credential stuffing and dictionary attacks by using the breach data.
+	* What is the impact of 2FA/MFA for entropy and in combat for credential stuffing?
 * Consider the dilemma of usability and security in the password context.  Good passwords are typically hard to remember.  Are password managers with automatic breach notifications the solution?
-* When thinking of your threat model, breaking the password is not about the time, rather, how much money you have to invest for parallel computing
+* When thinking of your threat model, breaking the password is not about the time; rather, how much money your potential threat actors can invest for parallel computing.
 
 You can also get ideas from the [xkcd comic about password strength](https://xkcd.com/936/).
 
@@ -206,3 +213,5 @@ Credits for the OUSPG alumni Jukka Pajukangas for originally making this task.
 
 [^1]: [Uncertainty](https://en.wikipedia.org/wiki/Uncertainty)
 [^2]: [Shannon Entropy](http://en.wikipedia.org/wiki/Entropy_(information_theory))
+[^11]: [hashcat](https://hashcat.net/hashcat/)
+[^12]: [John the Ripper](https://www.openwall.com/john/)
