@@ -3,7 +3,7 @@
 John the Ripper is a popular and powerful password cracker, check the project [front page](https://www.openwall.com/john/) and
 [documentation](https://www.openwall.com/john/doc/) for more complete information.
 
-![](john.png)
+![](img/john.png)
 
 ## Installation
 
