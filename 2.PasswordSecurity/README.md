@@ -125,9 +125,20 @@ The given value is based on [the avarage and variance of NVIDIA GeForce RTX 4090
 
 So far, we have thought breaking passwords just in theoretical level. Let's try out in practice with a couple popular tools. 
 
-Typically, passwords are hashed into the system's database to make it more difficult to obtain the original value; it means that we need to compute hashes to crack the passwords.
+Brute-force attack [^13] means, that we try to guess the password; we automate the process somehow to use pure force to try as many combinations as possible, in a hope that we eventually guess it correctly. 
+For this to succeed, we need some feedback on successful guess.
 
-You can choose yourself which methods to use, even just using Python works to a certain degree, but the use of specific tools is recommended. 
+You can brute force the login interface of the webpage, for example, but performance is limited by the capabilities of the server. 
+It can also be limited with other means (e.g. rate limiting). 
+The most common case in the context of passwords is to brute force [hashes](https://en.wikipedia.org/wiki/Hash_function) of the passwords, which have been leaked, usually as part of a security breach.
+
+Typically, passwords are hashed into the system's database to make it more difficult to obtain the original value; it means that we need to compute hashes of guesses to crack the passwords.
+We also get feedback about the correct guess; the hash simply matches.
+
+As seen from the previous's task entropy calculations, the amount of permutations can increase exponentially, and so does the required time to go through all the combinations.
+To reduce the amount of combinations, we can think different approaches, where some are handled on this exercise.
+
+You can choose yourself which tools to use in this exercise, even just using Python works to a certain degree, but the use of specific tools is recommended. 
 
 Particularly, we can use either **hashcat** [^11] or **John the Ripper** [^12].
 
@@ -281,3 +292,4 @@ Credits for the OUSPG alumni Jukka Pajukangas for originally making this task.
 [^2]: [Shannon Entropy](http://en.wikipedia.org/wiki/Entropy_(information_theory))
 [^11]: [hashcat](https://hashcat.net/hashcat/)
 [^12]: [John the Ripper](https://www.openwall.com/john/)
+[^13]: [Brute-force attack](https://en.wikipedia.org/wiki/Brute-force_attack)
