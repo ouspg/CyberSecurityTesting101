@@ -15,6 +15,12 @@ In Arch Linux in `x86_64`:
 sudo pacman –S john
 ```
 
+If you are having issues on starting the usage, you might also need to install OpenCL drivers:
+
+```sh
+pacman -Sy opencl-clover-mesa intel-compute-runtime pocl
+```
+
 > [!IMPORTANT]
 > Currently, you **cannot** run `john` in virtual machine, if your host is M1/M2/M3 MacBook. There isn't proper OpenCL support yet. There isn't ARM64 package either in Arch Linux.
 >  Instead, install [homebrew](https://brew.sh/) and then `john` directly to your host system as `brew install john`, for example.

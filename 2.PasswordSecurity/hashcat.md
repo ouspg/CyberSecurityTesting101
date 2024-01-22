@@ -9,10 +9,10 @@ You can find more information from `hashcat`'s own [documentation.](https://hash
 To install `hashcat` for the provided Arch Linux virtual machine, run the command
 
 ```sh
-sudo pacman -Sy hashcat opencl-clover-mesa
+sudo pacman -Sy hashcat opencl-clover-mesa intel-compute-runtime pocl
 ```
 
-This will install both `hashcat` and support for [OpenCL](https://en.wikipedia.org/wiki/OpenCL)
+This will install both `hashcat` and support for [OpenCL](https://en.wikipedia.org/wiki/OpenCL) for various processors.
 
 > [!IMPORTANT]
 > Currently, you **cannot** run `hashcat` in virtual machine, if your host is M1/M2/M3 MacBook. There isn't proper OpenCL support yet.
