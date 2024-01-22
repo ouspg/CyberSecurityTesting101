@@ -178,14 +178,14 @@ However, the worst happened and some service leaked the Kalle's password, with h
 
 While Kalle's protocol was not secure, ***not at all***, the underlying service's technical choices made it harder to crack the password.
 
-The service used one state-of-the-art hashing function [argon2](https://en.wikipedia.org/wiki/Argon2), which is [key derivation function](https://en.wikipedia.org/wiki/Key_derivation_function.); in practice is it calculates the hash many times to slow the brute forcing process which also improving weaker passwords in other means.
+The service used one state-of-the-art hashing function [argon2](https://en.wikipedia.org/wiki/Argon2), which is [key derivation function](https://en.wikipedia.org/wiki/Key_derivation_function); in practice it calculates the hash many times to slow the brute forcing process while also improving weaker passwords in other means.
 It is also designed to be resistant for GPU accelerated and paralleled computing.
 
 > In the Moodle exam, you need to crack the Kalle's password.
 >  
 > The provided `argon2` hash configuration is **not the best practice**; it designed so that you will notice how slow it can be on relatively low count wordlist, while also making it possible to crack the password in rather short duration.
 
-It is recommended to generate the whole wordlist based on the previous protocol, and then brute force with the final word list. Python implementation with [`argon2-cffi`](https://argon2-cffi.readthedocs.io/en/stable/index.html) library might be the best choice here.  In that case, you need to configure `argon2` hasher correctly based on the given parameters in Moodle exam.
+It is recommended to generate the whole wordlist based on the previous protocol, and then brute force with the final wordlist. Python implementation with [`argon2-cffi`](https://argon2-cffi.readthedocs.io/en/stable/index.html) library might be the best choice here.  In that case, you need to configure `argon2` hasher correctly based on the given parameters in Moodle exam.
   * On a 6-year-old laptop, brute forcing should take around 20 minutes at maximum.
   * Make sure that you are able to correctly crack passwords before letting it run longer durations.
 
@@ -254,7 +254,7 @@ It also notes some good practices on using the passwords on the systems.
  * What is the role of using hashes **and salts** in the passwords? Check [rainbow table attack](https://en.wikipedia.org/wiki/Rainbow_table).
  * Explore state-of-the-art hashing functions in password context.
 	 * Why we use key stretching algorithms when we hash passwords?
-	 * Consider the importance of resistance of hashing functions in password context (e.g. you do not get benefit for calculating the hashes on graphic card, memory usage and parallelism).
+	 * Consider the importance of resistance of hashing functions in password context (e.g. you do not get benefit for calculating the hashes on graphic card, having a high memory available, or by using parallelism).
 	 * Usually acceptable user experience delay for interactive authentication is `<=500ms`. `bcrypt` is considered to be better choice than `argon2` in that area. Why? It might be that there isn't single good algorithm for everything.
 * Check services like [';--have i been pwned?](https://haveibeenpwned.com/Passwords). Why are they very important? Why you should never re-use your passwords?
 	* Explore the impact of credential stuffing and dictionary attacks by using the breach data.
