@@ -19,9 +19,8 @@ You are not required to do tasks in order, but especially the first one is impor
 | Task # | Points | Description |
 | ---- | :--: | ---- |
 | Task 1 | 3 | The concept of computational complexity (Moodle exam) |
-| Task 2 | 1 |  Digital identity and trust (Moodle exam) |
-| Task 3 | 2 |  (essay)  |
-|  |  |  |
+| Task 2 | 1 | Digital identity and trust (Moodle exam) |
+| Task 3 | 1 | ? |
 
 Later tasks will require more time investment when compared to the previous tasks to acquire the relative amount of points. 
 
@@ -50,15 +49,58 @@ This is called as public-key cryptography.  In a short, we have **public key** t
 
 We only cover one basic example in this course how it works internally, but it is a very important concept on a higher level.
 
-## Key exchange algorithms: Diffie-Hellman
+## Task 1A) Key exchange algorithms: Diffie-Hellman
 
 [Diffie-Hellman key exchange](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange) was one of the first widely adapted public-key protocols. 
 It is based on [the discrete logarithm problem.](https://en.wikipedia.org/wiki/Discrete_logarithm)
+And it is still one of the most critical protocols out there; every TLS connection &#128274; from your browser and other places uses it!
+
+> The protocol *makes possible to exchange secret key under the insecure line* with some proved security assumptions, if we select numbers correctly. 
+
+Let's take a look at the original **Finite Field Diffie-Hellman** protocol.  Wikipedia is *very accurate and correct* in cryptography, and you should read that about Diffie-Hellman. Here we have a shortened version.
 We don't have to understand all the maths related to the problem for understanding the protocol itself. 
 
-The protocol *makes possible to exchange secret key under the insecure line* with some proved security assumptions. 
+$$
+\begin{align*}
+ \text{Let the following happen} \\
+ \text{with Alice and Bob:} \\
+& g \text{ is a publicly shared base} \\
+& p \text{ is a publicly shared prime number} \\
+& a \text{ is Alice's private key} \\
+& b \text{ is Bob's private key} \\
+\end{align*}
+$$
 
-Let's take a look at the original **Finite Field Diffie-Hellman** protocol.  Wikipedia is very accurate in cryptography, and you should read that.
+Alice and Bob each choose their private keys, $a$ and $b$, which are kept secret. They compute their public keys as follows:
+
+$$
+\begin{flalign*}
+\text{Alice's public key:} \quad & A = g^a \mod p \\
+\text{Bob's public key:} \quad & B = g^b \mod p
+\\\\
+ \text{Where:} \\
+& A \text{ is Alice's public key.} \\
+& B \text{ is Bob's public key.}
+\end{flalign*}
+$$
+
+After exchanging their public keys, Alice and Bob can compute the shared secret independently:
+
+$$
+\begin{align*}
+& \text{Shared secret as computed by Alice:} \quad & S_A = B^a \mod p \\
+& \text{Shared secret as computed by Bob:} \quad & S_B = A^b \mod p
+\end{align*}
+$$
+
+The shared secret value depends on the initially chosen secret, and shared secrets will be equal because of the properties of the modular exponentiation.
+
+$$
+{A}^{b}\bmod {p} = {g}^{ab}\bmod {p} = {g}^{ba}\bmod {p} = {B}^{a}\bmod {p} \Rightarrow S_A = S_B
+$$
+
+As a result, we get the following sequence diagram.
+
 
 ```mermaid
 sequenceDiagram
@@ -84,10 +126,8 @@ sequenceDiagram
 ```
 
 
-Not feasible to keep public key
-Session-level encryption (key lost?)
 
-
+Perfect forward secrecy.
 
 
 ## Public-key encryption
