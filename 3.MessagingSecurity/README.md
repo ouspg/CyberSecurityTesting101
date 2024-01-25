@@ -139,11 +139,13 @@ We need to change the secret every time to *maintain the entropy of the message;
 
 Let's consider the situation where Bob sends an encrypted message to Alice.
 The encryption with `ElGamal` happens as follows.
+
 $$
 \begin{align*}
 S = A^k \mod p \\
 C_1 = g^k \mod p \\
-C_2 = M \times S \mod p \\\\
+C_2 = M \times S \mod p \\
+\\
 \text{Where:} \\
 & S \text{ is shared secret.} \\
 & k \text{ is ephemeral key (Bob's hidden secret).} \\
@@ -153,13 +155,16 @@ C_2 = M \times S \mod p \\\\
 & C_2 \text{ is the ciphertext.}
 \end{align*}
 $$
-$C_1$ and $C_2$ will be delivered to Alice, and Alice decrypts the content as follows.
+
+$C_1$ and $C_2$ will be delivered to Alice, and Alice decrypts the 
+content as follows.
+
 $$
 \begin{align*}
 \text{To decrypt:} \\
  S &= C_1^a \mod p \\
  M &= C_2 \times S^{-1} \mod p \\\\
-&\text{Where }a \text{ is Alice's hidden secret and }\\ & S^{-1} \text{ is the modular inverse of } S \text{ modulo } p.
+&\text{Where }a \text{ is Alice's hidden secret and } S^{-1} \text{ is the modular inverse of } S \text{ modulo } p.
 \end{align*}
 $$
 
