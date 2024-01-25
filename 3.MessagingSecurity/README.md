@@ -8,7 +8,7 @@ The first task covers the basics of encryption and public-key cryptography.
 In the second task, we explore a bit about digital entities and trust systems in that context; how is the trust of the web page built.
 
 This exercise covers some very basics of cryptography.
-If you would like to know more about the topic, check out the courses **521244S Modern Cryptography (maths)** and **IC00AK18 Cryptographic Systems and Their Weaknesses (technical)**.
+If you would like to know more about the topic, check out the courses **521244S Modern Cryptography (maths)** and **IC00AK18 Cryptographic Systems and Their Weaknesses (technical implementations)**.
 
 ## Grading
 
@@ -93,16 +93,14 @@ $$
 \end{align*}
 $$
 
-The shared secret value depends on the initially chosen secret, and shared secrets will be equal because of the properties of the modular exponentiation.
+The shared secret value depends on the initially chosen secrets, and shared secrets will be equal because of the properties of the modular exponentiation.
 
 $$
 {A}^{b}\bmod {p} = {g}^{ab}\bmod {p} = {g}^{ba}\bmod {p} = {B}^{a}\bmod {p} \Rightarrow S_A = S_B
 $$
 
 
-
-
-<details><summary>As a result, we get the following sequence diagram. </summary>
+<details><summary>As a result, we get the following sequence diagram. (click me!)</summary>
 
 ```mermaid
 sequenceDiagram
@@ -130,11 +128,52 @@ sequenceDiagram
 </details>
 
 
-
 ## Task assignment
 
-Perfect forward secrecy.
+Diffie-Hellman key-exchange algorithm can be expanded to [ElGamal encryption](https://en.wikipedia.org/wiki/ElGamal_encryption).  We will take a look at a simplified explanation of that. Correct parameter generation is crucial; they must be [primitive roots.](https://en.wikipedia.org/wiki/Primitive_root_modulo_n) 
+We ignore it mostly for now, since we just want to see how public-key encryption works.
 
+When thinking of the previous Diffie-Hellman example, the receiver's public-key stays as stable but the senders changes every time we encrypt the message, because the hidden secret changes. In `ElGamal` encryption, we call the hidden secret $k$ as *ephemeral key*.
+
+We need to change the secret every time to *maintain the entropy of the message; the secret should be truly randomly generated.*  
+
+Let's consider the situation where Bob sends an encrypted message to Alice.
+The encryption with `ElGamal` happens as follows.
+$$
+\begin{align*}
+S = A^k \mod p \\
+C_1 = g^k \mod p \\
+C_2 = M \times S \mod p \\\\
+\text{Where:} \\
+& S \text{ is shared secret.} \\
+& k \text{ is ephemeral key (Bob's hidden secret).} \\
+& A \text{ is Alice's public key.} \\
+& C_1 \text{ is sender's ephemeral (aka Bob's) public key.} \\
+& M \text{ is the message as integer.} \\
+& C_2 \text{ is the ciphertext.}
+\end{align*}
+$$
+$C_1$ and $C_2$ will be delivered to Alice, and Alice decrypts the content as follows.
+$$
+\begin{align*}
+\text{To decrypt:} \\
+ S &= C_1^a \mod p \\
+ M &= C_2 \times S^{-1} \mod p \\\\
+&\text{Where }a \text{ is Alice's hidden secret and }\\ & S^{-1} \text{ is the modular inverse of } S \text{ modulo } p.
+\end{align*}
+$$
+
+The decryption process effectively cancels out the shared secret, leaving the original message $M$.
+
+The above is simplification; usually $C_1$ is just thought a part of the ciphertext, but when comparing to the Diffie-Hellman, it can be compared to a public key. 
+
+> In the Moodle exam, you will get Diffie-Hellman parameters and ElGamal encrypted message. Decrypt the message.
+> Covert the resulting integer to hexadecimal and handle it as a hex string. You will get the plaintext message.
+
+
+> [!WARNING]
+> The exam parameters are only for educational use. The security depends on the correct generation of the parameters. Original Diffie-Hellman is also vulnerable to  [man-in-the-middle attack.](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) Third party, let's call it as *Eve*, can act as both *Alice* and *Bob* if she is able to intercept the messages. She can do Diffie-Hellman key exchange twice and see the secret and either Alice or Bob will not notice it on the naive implementation. Eve pretends to be Bob for Alice and Alice for Bob, sharing her own secrets and making two shared-secrets. 
+> 
 
 ## Public-key encryption
 
@@ -162,3 +201,5 @@ sequenceDiagram
 ## Digital signatures and wanna-be Alice's
 
 ## Task 2: Certificates
+
+# Task 3: 
