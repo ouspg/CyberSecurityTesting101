@@ -53,7 +53,7 @@ We only cover one basic example in this course how it works internally, but it i
 
 [Diffie-Hellman key exchange](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange) was one of the first widely adapted public-key protocols. 
 It is based on [the discrete logarithm problem.](https://en.wikipedia.org/wiki/Discrete_logarithm)
-And it is still one of the most critical protocols out there; every TLS connection &#128274; from your browser and other places uses it!
+And it is still one of the most critical protocols out there; **every TLS connection &#128274; from your browser and other places uses it!**
 
 > The protocol *makes possible to exchange secret key under the insecure line* with some proved security assumptions, if we select numbers correctly. 
 
@@ -99,8 +99,10 @@ $$
 {A}^{b}\bmod {p} = {g}^{ab}\bmod {p} = {g}^{ba}\bmod {p} = {B}^{a}\bmod {p} \Rightarrow S_A = S_B
 $$
 
-As a result, we get the following sequence diagram.
 
+
+
+<details><summary>As a result, we get the following sequence diagram. </summary>
 
 ```mermaid
 sequenceDiagram
@@ -125,7 +127,11 @@ sequenceDiagram
     Bob-->>Alice: S_A = S_B (Shared Secret Established)
 ```
 
+</details>
 
+
+
+## Task assignment
 
 Perfect forward secrecy.
 
