@@ -178,6 +178,7 @@ $$
 ***Minimum*** recommended length for Diffie-Hellman's group prime $p$ is usually 2048 bits.  Sometimes there can be benefits if the prime $p$ is also a safe prime: $p=2q+1$ where $q$ is also prime.  
 
 $\textcolor{red}{\textit{If you manage to solve the discrete logarithm problem in polynomial-time, \textbf{you will break the world.}}}$
+
 If you have ever wondered of the excitement around quantum computers, that is what they potentially [can do.](https://en.wikipedia.org/wiki/Shor's_algorithm)
 
 ## Task 1B) Basics of public-key encryption
