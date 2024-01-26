@@ -54,7 +54,7 @@ We only cover one basic example in this course how it works internally, but it i
 
 [Diffie-Hellman key exchange](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange) was one of the first widely adapted public-key protocols. 
 It is based on [the discrete logarithm problem.](https://en.wikipedia.org/wiki/Discrete_logarithm)
-And it is still one of the most critical protocols out there; **every TLS connection &#128274; from your browser and other places uses it!**
+And it is still one of the most critical protocols out there; **every [TLS connection](https://en.wikipedia.org/wiki/Transport_Layer_Security) &#128274; from your browser and other places uses it!**
 
 > The protocol *makes possible to exchange shared secret key under the insecure line* with some proved security assumptions, if we select parameters correctly. 
 
@@ -183,14 +183,17 @@ If you have ever wondered of the excitement around quantum computers, that is wh
 
 ## Task 1B) Basics of public-key encryption
 
-Diffie-Hellman key-exchange algorithm can be expanded to [ElGamal encryption](https://en.wikipedia.org/wiki/ElGamal_encryption).  We will take a look at a simplified explanation of that. 
+Diffie-Hellman key-exchange algorithm can be expanded to [ElGamal encryption](https://en.wikipedia.org/wiki/ElGamal_encryption).  
+Let's take a look at a simplified explanation of that.
 
-When thinking of the previous Diffie-Hellman example, the receiver's public-key stays as stable but the senders changes every time we encrypt the message, because the hidden secret changes. In `ElGamal` encryption, we call the hidden secret $k$ as *ephemeral key*.
+In the context of Diffie-Hellman, each participant often uses public keys only once per exchange to maintain [perfect forward secrecy](https://en.wikipedia.org/wiki/Forward_secrecy).
+However, in ElGamal encryption, a key aspect is the introduction of a unique, temporary key for each encryption process. This key is known as the _ephemeral key_, denoted as $k$. 
+Typically, only the message sender changes this key, and the receiver's public key stays constant.
 
-We need to change the secret every time to *maintain the entropy of the message; the secret should be truly randomly generated.*  
+The secret $k$ must be changed for each message to _maintain the entropy of the message; it should be truly randomly generated._
 
-Let's consider the situation where Bob sends an encrypted message to Alice.
-The encryption with `ElGamal` happens as following in that case.
+Consider a scenario where Bob sends an encrypted message to Alice. The encryption process in `ElGamal` is as follows:
+
 
 $$
 \begin{align*}
@@ -221,10 +224,11 @@ $$
 $$
 
 The decryption process effectively cancels out the shared secret, leaving the original message $M$.
+The message size must be smaller than $p - 1$. 
 
 The above is simplification; usually $C_1$ is just thought a part of the ciphertext, but when comparing to the Diffie-Hellman, it can be thought as public key. 
 
-> In the Moodle exam, you will get all Diffie-Hellman parameters and ElGamal encrypted message. Decrypt the message.
+> In the Moodle exam, you will get all Diffie-Hellman parameters and ElGamal encrypted message. Decrypt the message by applying the above.
 > Covert the resulting integer to hexadecimal and handle it as a hex string. You will get the plaintext message from it.
 
 
@@ -253,6 +257,46 @@ sequenceDiagram
 ```
 </details>
 
-## Task 1C) Digital signatures and wanna-be Alice's
+## Task 2: Digital signatures and wannabe Alice's
 
-## Task 2: Digital identity and trust
+> Return as Moodle exam
+
+Public-key cryptography is also the foundation of [digital signatures](https://en.wikipedia.org/wiki/Digital_signature). 
+Digital signing is used to ensure the _integrity and authenticity of a message_.
+
+We sign data using **private keys**, and validate the signature using **public keys**.
+
+If you ever have wondered how digital signatures in PDFs and other places work, they are also derived from the public-key cryptography.
+[If you own an ID card, it has certificate and private key inside](https://dvv.fi/en/citizen-certificate-electronic-signature).
+
+Both integrity and authenticity are achieved by first creating a hash (a fixed-size string of bytes) of the original message, and then signing this hash with the private key. 
+Anyone can verify the signature using the correct public key.
+
+When proving the integrity, the message content is hashed, and this hash value is compared to the value obtained from the signature after verifying the signature. The hash ensures that the content is unmodified. If the signature is correctly verified with the public key, it also validates the origin of the message.
+
+### Task assignment
+
+Alice has attempted to send a message for you!
+
+The message is in the “messages” folder. However, there are many *wannabe Alice's* who are not the real and try to confuse and scam you. 
+You cannot be sure which message is the correct one.
+
+However, *the real Alice* was smart and she digitally signed her message. Wannabe Alice's have signed their messages too, but they didn't have the correct private key…
+
+Alice has shared her public key with a small twist; it is a QR code. What is the correct message?
+
+> You will get the QR code in Moodle exam. Return the secret part of the message in secret{} format.
+
+All the messages have been signed by using [GnuPG](https://www.gnupg.org/).
+GnuPG is based on the [OpenPGP standard,](https://www.openpgp.org/) which was originally created for end-to-end encryption of emails.
+
+On this task, you will need to import Alice's public key to `gpg`.
+The course VM has[`gpg`](https://man.archlinux.org/man/gpg.1) pre-installed. 
+
+To read the QR codes, you need to install `zbar`.
+
+`sudo pacman -Sy zbar`
+
+## Task 3: Digital identity and trust
+
+> Return this task to GitHub
