@@ -7,7 +7,9 @@ The similar principles apply also in there.
 The first task covers the basics of encryption and public-key cryptography. 
 In the second task, we explore a bit about digital entities and trust systems in that context; how is the trust of the web page built.
 
-This exercise covers some very basics of cryptography.
+> The workload is based on the assumption that students will use LLMs!
+
+This exercise covers some very basics of modern cryptography and acts as introduction to the field.
 If you would like to know more about the topic, check out the courses **521244S Modern Cryptography (maths)** and **IC00AK18 Cryptographic Systems and Their Weaknesses (technical implementations)**.
 
 ## Grading
@@ -19,8 +21,7 @@ You are not required to do tasks in order, but especially the first one is impor
 | Task # | Points | Description |
 | ---- | :--: | ---- |
 | Task 1 | 3 | The concept of computational complexity (Moodle exam) |
-| Task 2 | 1 | Digital identity and trust (Moodle exam) |
-| Task 3 | 1 | ? |
+| Task 2 | 2 | Digital identity and trust (Return to GitHub) |
 
 Later tasks will require more time investment when compared to the previous tasks to acquire the relative amount of points. 
 
@@ -45,7 +46,7 @@ We assume again that systems are secure if *any adversaries are computationally 
 Let's consider the second scenario from a complex problem perspective; what if we don't need a secret?
 If we continue with the box example, it's like giving your friend an unbreakable box with a special lock. Your friend sends you this box, which anyone can lock, but only your friend (the one who sent it) has the unique key to open it. This means you (who received the box) can send your secret message safely, without ever needing to worry about the key being stolen!
 
-This is called as public-key cryptography.  In a short, we have **public key** to encrypt the contents and **private key** to decrypt them.  The secrecy is based on computational hardness; it is easy to encrypt with public key, but extremely difficult to decrypt with it, and hence, we require private key to access the contents. 
+This is called as [public-key (also asymmetric) cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography). In a short, we have **public key** to encrypt the contents and **private key** to decrypt them.  The secrecy is based on computational hardness; it is easy to encrypt with public key, but extremely difficult to decrypt with it, and hence, we require private key to access the contents. 
 
 We only cover one basic example in this course how it works internally, but it is a very important concept on a higher level.
 
@@ -55,7 +56,7 @@ We only cover one basic example in this course how it works internally, but it i
 It is based on [the discrete logarithm problem.](https://en.wikipedia.org/wiki/Discrete_logarithm)
 And it is still one of the most critical protocols out there; **every TLS connection &#128274; from your browser and other places uses it!**
 
-> The protocol *makes possible to exchange secret key under the insecure line* with some proved security assumptions, if we select numbers correctly. 
+> The protocol *makes possible to exchange shared secret key under the insecure line* with some proved security assumptions, if we select parameters correctly. 
 
 Let's take a look at the original **Finite Field Diffie-Hellman** protocol.  Wikipedia is *very accurate and correct* in cryptography, and you should read that about Diffie-Hellman. Here we have a shortened version.
 We don't have to understand all the maths related to the problem for understanding the protocol itself. 
@@ -64,7 +65,7 @@ $$
 \begin{align*}
  \text{Let the following happen} \\
  \text{with Alice and Bob:} \\
-& g \text{ is a publicly shared base} \\
+& g \text{ is a publicly shared base and primitive root} \\
 & p \text{ is a publicly shared prime number} \\
 & a \text{ is Alice's private key} \\
 & b \text{ is Bob's private key} \\
@@ -127,18 +128,68 @@ sequenceDiagram
 
 </details>
 
+### Task assignment: Brute forcing the private key — **how secret is this secret?**
 
-## Task assignment
+Let's observe in practice how hard it actually can be to “crack” the private key, even on small numbers. You can do this by simply brute forcing the private key. Iterate all possible numbers based on the group $p$ and see if with some number you are able to get the matching public key. You can assume that private key is smaller than $p -1$.
 
-Diffie-Hellman key-exchange algorithm can be expanded to [ElGamal encryption](https://en.wikipedia.org/wiki/ElGamal_encryption).  We will take a look at a simplified explanation of that. Correct parameter generation is crucial; they must be [primitive roots.](https://en.wikipedia.org/wiki/Primitive_root_modulo_n) 
-We ignore it mostly for now, since we just want to see how public-key encryption works.
+
+This means that you need to do a small programming exercise by applying previous equations and guess the private key.
+The assignment uses 30-bit length for $p$. 
+
+
+> [!Tip]
+> You will notice, that linear brute forcing process is very slow, and you want to speed up the process, by using [Baby-step giant-step algorithm!](https://en.wikipedia.org/wiki/Baby-step_giant-step) 
+> *One might find some existing code pieces to just reuse them or consult a friendly LLM…*
+> If you want to go the deep end, [here are](https://math.mit.edu/classes/18.783/2022/LectureNotes9.pdf) some excellent notes (not required).
+
+
+Since we work on very small numbers (30 bits), it is rather easy to find multiple different private keys which produce the same public key. This highlights the importance of usage of large numbers in Diffie-Hellman.
+
+* The properties of cyclic groups and the behaviour of the modulo operation can lead to situations where multiple different exponents (private keys) result in the same value when raised with a given base $g$ and taken modulo $p$.
+* The range of possible keys is significantly limited due to low bit length, and this increases the chances for collisions. 
+* The security is based on the probability assumptions of above.
+* However, **the shared secrets are always the same because of the properties of modular exponentiation!**
+
+> [!Important]
+> On the Moodle exam, you will be provided Diffie-Hellman parameters, excluding the Bob's and Alice's hidden secrets. Brute force the private key, either by using Bob's or Alice's public key, **then calculate the shared secret by using the other public key**. The bit length is intentionally selected so that you might need to consider using “a baby-step giant-step algorithm”.
+
+
+Correct parameter selection is essential in Diffie-Hellman to get the maximum security. We don't cover that in depth this course, but here is an overview.
+
+$$
+\begin{align*}
+& \text{Let } p \text{ be a large prime and } g \text{ a primitive root modulo } p. \\
+& \text{The private keys } a \text{ (for Alice) and } b \text{ (for Bob) are chosen under the following conditions:}
+\end{align*}
+$$
+
+$$
+\begin{align*}
+1.\ & a, b \in \mathbb{Z} \\
+2.\ & 1 < a, b < p-1 \\
+3.\ & a, b \text{ are chosen randomly and kept secret} \\
+\\
+\text{Where:} \\
+\mathbb{Z} & \text{ denotes the set of all integers.} \\
+a, b & \text{ are the private keys of Alice and Bob, respectively.}
+\end{align*}
+$$
+
+***Minimum*** recommended length for Diffie-Hellman's group prime $p$ is usually 2048 bits.  Sometimes there can be benefits if the prime $p$ is also a safe prime: $p=2q+1$ where $q$ is also prime.  
+
+$\textcolor{red}{\textit{If you manage to solve the discrete logarithm problem in polynomial-time, \textbf{you will break the world.}}}$
+If you have ever wondered of the excitement around quantum computers, that is what they potentially [can do.](https://en.wikipedia.org/wiki/Shor's_algorithm)
+
+## Task 1B) Basics of public-key encryption
+
+Diffie-Hellman key-exchange algorithm can be expanded to [ElGamal encryption](https://en.wikipedia.org/wiki/ElGamal_encryption).  We will take a look at a simplified explanation of that. 
 
 When thinking of the previous Diffie-Hellman example, the receiver's public-key stays as stable but the senders changes every time we encrypt the message, because the hidden secret changes. In `ElGamal` encryption, we call the hidden secret $k$ as *ephemeral key*.
 
 We need to change the secret every time to *maintain the entropy of the message; the secret should be truly randomly generated.*  
 
 Let's consider the situation where Bob sends an encrypted message to Alice.
-The encryption with `ElGamal` happens as follows.
+The encryption with `ElGamal` happens as following in that case.
 
 $$
 \begin{align*}
@@ -170,20 +221,17 @@ $$
 
 The decryption process effectively cancels out the shared secret, leaving the original message $M$.
 
-The above is simplification; usually $C_1$ is just thought a part of the ciphertext, but when comparing to the Diffie-Hellman, it can be compared to a public key. 
+The above is simplification; usually $C_1$ is just thought a part of the ciphertext, but when comparing to the Diffie-Hellman, it can be thought as public key. 
 
-> In the Moodle exam, you will get Diffie-Hellman parameters and ElGamal encrypted message. Decrypt the message.
-> Covert the resulting integer to hexadecimal and handle it as a hex string. You will get the plaintext message.
+> In the Moodle exam, you will get all Diffie-Hellman parameters and ElGamal encrypted message. Decrypt the message.
+> Covert the resulting integer to hexadecimal and handle it as a hex string. You will get the plaintext message from it.
 
 
 > [!WARNING]
-> The exam parameters are only for educational use. The security depends on the correct generation of the parameters. Original Diffie-Hellman is also vulnerable to  [man-in-the-middle attack.](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) Third party, let's call it as *Eve*, can act as both *Alice* and *Bob* if she is able to intercept the messages. She can do Diffie-Hellman key exchange twice and see the secret and either Alice or Bob will not notice it on the naive implementation. Eve pretends to be Bob for Alice and Alice for Bob, sharing her own secrets and making two shared-secrets. 
+> The exam parameters are only for educational use. The security depends on the correct generation of the parameters. The original Diffie-Hellman is also vulnerable to [man-in-the-middle attack.](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) 
 > 
 
-## Public-key encryption
-
-
-
+<details><summary>On high level, with modern public-key algorithms, the encryption sequence can be following. (click me!)</summary>
 
 ```mermaid
 sequenceDiagram
@@ -202,9 +250,8 @@ sequenceDiagram
     Bob->>Bob: Decrypt with Private_B
     Alice->>Alice: Decrypt with Private_A
 ```
+</details>
 
-## Digital signatures and wanna-be Alice's
+## Task 1C) Digital signatures and wanna-be Alice's
 
-## Task 2: Certificates
-
-# Task 3: 
+## Task 2: Digital identity and trust
