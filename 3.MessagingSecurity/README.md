@@ -292,13 +292,12 @@ The message is in the “messages” folder.
 However, there are many *wannabe Alices*, who are not real and try to confuse and scam Bob. 
 Bob cannot be sure which message is the correct one.
 
-> Clone this repository to get the messages.
-
 However, *the real Alice* was smart and she digitally signed her message. Wannabe Alices have signed their messages too, but they didn't have the correct private key…
 
 Alice has shared her public key with a small twist; it is a QR code. What is the correct message? Can you help Bob?
 
 > You will get the QR code in Moodle exam. Return the account where message is referring into.
+> Clone this repository to get the messages.
 
 All the messages have been signed by using [GnuPG](https://www.gnupg.org/).
 GnuPG is based on the [OpenPGP standard,](https://www.openpgp.org/) which was originally created for end-to-end encryption of emails.
@@ -307,7 +306,6 @@ On this task, you will need to import Alice's public key to `gpg`.
 The course VM has[`gpg`](https://man.archlinux.org/man/gpg.1) pre-installed. 
 
 To read a single message, you can use command `gpg --decrypt <message>.`
-
 
 Since there are quite a lot of messages, you need to somehow automate this process and see which message can be validated with the provided public key.
 You can use either just `bash` script or [`python-gnupg`](https://gnupg.readthedocs.io/en/latest/) library.
