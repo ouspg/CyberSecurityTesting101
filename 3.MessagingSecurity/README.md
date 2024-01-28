@@ -4,8 +4,10 @@ In this week, we handle the topics of encryption, trust and digital identity in 
 When we talk about messaging in this exercise, we upgrade the definition for all digital communication and data exchange. 
 The similar principles apply also in there.
 
-The first task covers the basics of encryption and public-key cryptography. 
+The first task covers the basics of public-key cryptography and encryption.
 In the second task, we explore a bit about digital entities and trust systems in that context; how is the trust of the web page built.
+On the third task, we observe what certificates are. 
+
 
 > The workload is based on the assumption that students will use LLMs!
 
@@ -48,7 +50,7 @@ We assume again that systems are secure if *any adversaries are computationally 
 Let's consider the second scenario from a complex problem perspective; what if we don't need a secret?
 If we continue with the box example, it's like giving your friend an unbreakable box with a special lock. Your friend sends you this box, which anyone can lock, but only your friend (the one who sent it) has the unique key to open it. This means you (who received the box) can send your secret message safely, without ever needing to worry about the key being stolen!
 
-This is called as [public-key (also asymmetric) cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography). In a short, we have **public key** to encrypt the contents and **private key** to decrypt them.  The secrecy is based on computational hardness; it is easy to encrypt with public key, but extremely difficult to decrypt with it, and hence, we require private key to access the contents. 
+This is called as [public-key (or asymmetric) cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography). In a short, we have **public key** to encrypt the contents and **private key** to decrypt them.  The secrecy is based on computational hardness; it is easy to encrypt with public key, but extremely difficult to decrypt with it, and hence, we require private key to access the contents. 
 
 We only cover one basic example in this course how it works internally, but it is a very important concept on a higher level.
 
@@ -57,10 +59,11 @@ We only cover one basic example in this course how it works internally, but it i
 [Diffie-Hellman key exchange](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange) was one of the first widely adapted public-key protocols. 
 It is based on [the discrete logarithm problem.](https://en.wikipedia.org/wiki/Discrete_logarithm)
 And it is still one of the most critical protocols out there; **every [TLS connection](https://en.wikipedia.org/wiki/Transport_Layer_Security) &#128274; from your browser and other places uses it!**
+Also, [Signal](https://signal.org/docs/specifications/x3dh/#introduction) and WhatsApp (based on Signal's protocol), for example, use the **advanced version** of the same protocol.
 
 > The protocol *makes possible to exchange shared secret key under the insecure line* with some proved security assumptions, if we select parameters correctly. 
 
-Let's take a look at the original **Finite Field Diffie-Hellman** protocol.  Wikipedia is *very accurate and correct* in cryptography, and you should read that about Diffie-Hellman. Here we have a shortened version.
+Let's take a look at the original **Finite Field Diffie-Hellman** protocol, which is easier to understand.  Wikipedia is *very accurate and correct* in cryptography, and you should read that about Diffie-Hellman. Here we have a shortened version.
 We don't have to understand all the maths related to the problem for understanding the protocol itself. 
 
 $$
@@ -149,7 +152,7 @@ Since we work on very small numbers (30 bits), it is rather easy to find multipl
 
 * The properties of cyclic groups and the behaviour of the modulo operation can lead to situations where multiple different exponents (private keys) result in the same value when raised with a given base $g$ and taken modulo $p$.
 * The range of possible keys is significantly limited due to low bit length, and this increases the chances for collisions. 
-* The security is based on the probability assumptions of above.
+* The security is based on the probability assumptions of above. Again, the concept of information entropy.
 * However, **the shared secrets are always the same because of the properties of modular exponentiation!**
 
 > [!Important]
@@ -221,21 +224,26 @@ $$
 \text{To decrypt:} \\
  S &= C_1^a \mod p \\
  M &= C_2 \times S^{-1} \mod p \\\\
-&\text{Where }a \text{ is Alice's hidden secret and } S^{-1} \text{ is the modular inverse of } S \text{ modulo } p.
+&\text{Where }a \text{ is Alice's hidden secret and } S^{-1} \text{ is the modular multiplicative inverse of } S \text{ modulo } p.
 \end{align*}
 $$
 
 The decryption process effectively cancels out the shared secret, leaving the original message $M$.
-The message size must be smaller than $p - 1$. 
 
-The above is simplification; usually $C_1$ is just thought a part of the ciphertext, but when comparing to the Diffie-Hellman, it can be thought as public key. 
+The above is simplification; usually $C_1$ is just thought as a component necessary for the decryption of the ciphertext, but when comparing to the Diffie-Hellman, it can be thought as public key. 
 
-> In the Moodle exam, you will get all Diffie-Hellman parameters and ElGamal encrypted message. Decrypt the message by applying the above.
-> Covert the resulting integer to hexadecimal and handle it as a hex string. You will get the plaintext message from it.
+Overall, we can think that `ElGamal` encryption combines the aspects of both asymmetric and symmetric encryption. The shared key is obtained with asymmetric means, but internally the encryption and decryption of the data is symmetric by using the same shared secret.
+
+*The message size for public-key encryption algorithms must smaller than $p - 1$ or even smaller. As a result, public-key algorithms are commonly used to encrypt the secret of the symmetric key algorithms!* They are also slow, because they do complex mathematical operations with large numbers.
+
+
+> In the Moodle exam, you will get all Diffie-Hellman parameters and ElGamal encrypted message. Parameter $p$ is 1024 bits, so **you will notice some big numbers**, which you should be able to copy.  Decrypt the message by applying the above.
+> Covert the resulting integer to ASCII; reverse the process (in Python) `m_int = int.from_bytes(sentence.encode('ASCII'), "big")`, which was used to convert the message into integer. You don't have to break anything here, just apply the equations to decrypt the message.
+
 
 
 > [!WARNING]
-> The exam parameters are only for educational use. The security depends on the correct generation of the parameters. The original Diffie-Hellman is also vulnerable to [man-in-the-middle attack.](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) 
+> The exam parameters are only for educational use, and $p$ is not safe prime. The security depends on the correct generation of the parameters. The original Diffie-Hellman is also vulnerable to [man-in-the-middle attack.](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) 
 > 
 
 <details><summary>On high level, with modern public-key algorithms, the encryption sequence can be following. (click me!)</summary>
@@ -269,7 +277,7 @@ Digital signing is used to ensure the _integrity and authenticity of a message_.
 We sign data using **private keys**, and validate the signature using **public keys**.
 
 If you ever have wondered how digital signatures in PDFs and other places work, they are also derived from the public-key cryptography.
-[If you own an ID card, it has certificate and private key inside](https://dvv.fi/en/citizen-certificate-electronic-signature).
+If you own an ID card, [it has certificate and private key inside](https://dvv.fi/en/citizen-certificate-electronic-signature).
 
 Both integrity and authenticity are achieved by first creating a hash (a fixed-size string of bytes) of the original message, and then signing this hash with the private key. 
 Anyone can verify the signature using the correct public key.
@@ -278,14 +286,14 @@ When proving the integrity, the message content is hashed, and this hash value i
 
 ### Task assignment
 
-Alice has attempted to send a message for Bob (you!).
+Alice has attempted to send a message for Bob.
 
-The message is in the “messages” folder. However, there are many *wannabe Alice's* who are not the real and try to confuse and scam you. 
-You cannot be sure which message is the correct one.
+The message is in the “messages” folder. However, there are many *wannabe Alice's* who are not the real and try to confuse and scam Bob. 
+Bob cannot be sure which message is the correct one.
 
 However, *the real Alice* was smart and she digitally signed her message. Wannabe Alice's have signed their messages too, but they didn't have the correct private key…
 
-Alice has shared her public key with a small twist; it is a QR code. What is the correct message?
+Alice has shared her public key with a small twist; it is a QR code. What is the correct message? Can you help Bob?
 
 > You will get the QR code in Moodle exam. Return the secret part of the message in secret{} format.
 
@@ -294,6 +302,7 @@ GnuPG is based on the [OpenPGP standard,](https://www.openpgp.org/) which was or
 
 On this task, you will need to import Alice's public key to `gpg`.
 The course VM has[`gpg`](https://man.archlinux.org/man/gpg.1) pre-installed. 
+Since there are quite a lot of messages, you need to somehow automate this process and see which message can be validated with the provided public key.
 
 To read the QR codes, you need to install `zbar`.
 
@@ -306,14 +315,16 @@ To read the QR codes, you need to install `zbar`.
 Take a look what [digital certificates](https://en.wikipedia.org/wiki/Public_key_certificate) are.
 Public-key cryptography is also the foundation of the certificates.
 
-When you use a website, and if this website uses TLS connection, it has  certificate, which is used as base for secure connection.
-Certificate can be thought as digital identity, which is issued for specific purpose.
+Certificate can be thought as digital information, which is issued for specific purpose.
+The issuer uses digital signatures to sign information in specific format, ensuring that trust and integrity of the information is based on the issuer. The most common such a format is [X.509.](https://en.wikipedia.org/wiki/X.509)
+
+Digital certificates are issued by trusted entities known as Certificate Authorities (CAs).
+We have ultimate trust for these authorities, and these authorities are used as root of trust to create digital identities for other entities.
+
+For example, when you use a website, and if this website uses TLS connection, it has certificate, which is used as base for secure connection.
 
 When the browser initiates the connection, certificate authenticity is validated by the browser. The domain name of the website is tied to the certificate, and in that way the browser attempts to verity that data is indeed coming from the claimed entity.
 Once authenticity is validated and an encrypted connection is formed, then the browser accesses the content of the website.
-
-Digital certificates are issued by trusted entities known as Certificate Authorities (CAs).
-We have ultimate trust for these authorities.
 
 The flow behind the scenes can be simplified as follows:
 
@@ -397,7 +408,7 @@ Certificate chain
     - TLS certificates have a validity period. Knowing the expiration date is important for maintaining the website's security.
   - **What is the encryption algorithm and key size?**
     - This information provides insight into the strength and type of encryption used for securing communications.
-  - **Manual validation with `openssl verify`:**
-    - Attempt to manually validate the website's certificate using `openssl verify`. If you download the certificate and possibly other parts, can you verify it?
+  - **Manual validation with `openssl verify` or `openssl s_client` with local file:**
+    - Attempt to manually validate the website's certificate using the local root CA files. If you download the target server's certificate and possibly other parts, can you verify it?
   - **Troubleshooting failed validation:**
     - If manual validation fails, explain how this process typically happens on Linux and what components might be necessary. This can include understanding the role of root and intermediate certificates, and how to construct a complete certificate chain for verification.
