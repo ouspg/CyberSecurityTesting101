@@ -237,10 +237,10 @@ Overall, we can think that `ElGamal` encryption combines the aspects of both asy
 *The message size for public-key encryption algorithms must smaller than $`p - 1`$ or even smaller. As a result, public-key algorithms are commonly used to encrypt the secret of the symmetric key algorithms!* They are also slow, because they do complex mathematical operations with large numbers.
 
 > [!Important]
-> On the Moodle exam, you will get all Diffie-Hellman parameters and ElGamal encrypted message. Parameter $p$ is 1024 bits, so **you will notice some big numbers**, which you should be able to copy regardless.  Decrypt the message by applying the above.
+> On the Moodle exam, you will get all Diffie-Hellman parameters and ElGamal encrypted message. Parameter $p$ is 1024 bits, so **you will notice some big numbers**.  Decrypt the message by applying the above. You don't have to break anything here, just apply the equations to decrypt the message. We just want to understand the basic concept.
 
-
-Covert the resulting integer to ASCII; reverse the process (in Python) `m_int = int.from_bytes(sentence.encode('ASCII'), "big")`, which was used to convert the message into integer. You don't have to break anything here, just apply the equations to decrypt the message.
+> [!Tip]
+>Covert the resulting integer to ASCII; reverse the process (in Python) `m_int = int.from_bytes(sentence.encode('utf-8'), "big")`, which was used to convert the original message into integer. Note that you must round up bits to next full byte to not lose any data, when considering how many bytes this integer takes to present. Original message is a phrase and ends to dot `.`.
 
 The exam parameters are only for educational use, and $p$ is not safe prime. The security depends on the correct generation of the parameters. The original Diffie-Hellman is also vulnerable to [man-in-the-middle attack.](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) 
 
@@ -290,22 +290,41 @@ Alice has attempted to send a message for Bob.
 The message is in the “messages” folder. However, there are many *wannabe Alice's* who are not the real and try to confuse and scam Bob. 
 Bob cannot be sure which message is the correct one.
 
+> Clone this repository to get the messages.
+
 However, *the real Alice* was smart and she digitally signed her message. Wannabe Alice's have signed their messages too, but they didn't have the correct private key…
 
 Alice has shared her public key with a small twist; it is a QR code. What is the correct message? Can you help Bob?
 
-> You will get the QR code in Moodle exam. Return the secret part of the message in secret{} format.
+> You will get the QR code in Moodle exam. Return the account where message is referring into.
 
 All the messages have been signed by using [GnuPG](https://www.gnupg.org/).
 GnuPG is based on the [OpenPGP standard,](https://www.openpgp.org/) which was originally created for end-to-end encryption of emails.
 
 On this task, you will need to import Alice's public key to `gpg`.
 The course VM has[`gpg`](https://man.archlinux.org/man/gpg.1) pre-installed. 
-Since there are quite a lot of messages, you need to somehow automate this process and see which message can be validated with the provided public key.
 
-To read the QR codes, you need to install `zbar`.
+To read a single message, you can use command `gpg --decrypt <message>.`
+
+
+Since there are quite a lot of messages, you need to somehow automate this process and see which message can be validated with the provided public key.
+You can use either just `bash` script or [`python-gnupg`](https://gnupg.readthedocs.io/en/latest/) library.
+
+To read the QR codes, you need to install `zbar` or just use your phone to get the public key.
+QR code contains a public key which uses PGP's ASCII-armoured format.
 
 `sudo pacman -Sy zbar`
+
+Then, from the command-line, you can use `zbarimg` to read QR codes.
+
+Extra: if you want to [learn more about QR codes](https://qr.blinry.org/).
+
+You can ignore the following when you find the correct message:
+
+```sh
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+```
 
 ## Task 3: Digital identity and trust
 
