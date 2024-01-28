@@ -1,12 +1,12 @@
 # 3. Messaging Security
 
-In this week, we handle the topics of encryption, trust and digital identity in the context of messaging. 
+This week handles the topics of encryption, trust and digital identity in the context of messaging. 
 When we talk about messaging in this exercise, we upgrade the definition for all digital communication and data exchange. 
 Similar principles apply also in there.
 
 The first task covers the basics of public-key cryptography and encryption.
-In the second task, we explore a bit about digital entities and trust systems in that context; how is the trust of the web page built.
-On the third task, we observe what certificates are. 
+In the second task, we explore a bit what digital signatures are.
+On the third task, we observe what certificates are and how the trust of the website is built. 
 
 
 > The workload is based on the assumption that students will use LLMs!
@@ -267,17 +267,17 @@ sequenceDiagram
 ```
 </details>
 
-## Task 2: Digital signatures and wannabe Alice's
+## Task 2: Digital signatures and wannabe Alices
 
 > Return as Moodle exam
 
 Public-key cryptography is also the foundation of [digital signatures](https://en.wikipedia.org/wiki/Digital_signature). 
 Digital signing is used to ensure the _integrity and authenticity of a message_.
 
-We sign data using **private keys** and validate the signature using **public keys**.
+We sign data using **private keys** and validate the signature by using **public keys**.
 
 If you ever have wondered how digital signatures in PDFs and other places work, they are also derived from public-key cryptography.
-If you own an ID card, [it has a certificate and private key inside](https://dvv.fi/en/citizen-certificate-electronic-signature).
+If you own a Finnish ID card, [it has a certificate and private key inside](https://dvv.fi/en/citizen-certificate-electronic-signature).
 
 Both integrity and authenticity are achieved by first creating a hash (a fixed-size string of bytes) of the original message, and then signing this hash with the private key. 
 Anyone can verify the signature using the correct public key.
@@ -428,5 +428,5 @@ Certificate chain
     - This information provides insight into the strength and type of encryption used for securing communications.
   - **Manual validation with `openssl verify` or `openssl s_client` with local file:**
     - Attempt to manually validate the website's certificate using the local root CA files. If you download the target server's certificate and possibly other parts, can you verify it?
-  - **Troubleshooting failed validation:**
-    - If manual validation fails, explain how this process typically happens on Linux and what components might be necessary. This can include understanding the role of root and intermediate certificates, and how to construct a complete certificate chain for verification.
+  - **Validation process on Linux:**
+    - If manual validation fails, explain how this process typically happens on Linux and what components might be necessary. This can include understanding the role of root and intermediate certificates, and how to construct a complete certificate chain for verification. What is the package in Arch Linux which contains root CAs? What is the typical directory location?
