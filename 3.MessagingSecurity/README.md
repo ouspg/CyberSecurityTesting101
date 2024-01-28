@@ -234,17 +234,16 @@ The above is simplification; usually $C_1$ is just thought as a component necess
 
 Overall, we can think that `ElGamal` encryption combines the aspects of both asymmetric and symmetric encryption. The shared key is obtained with asymmetric means, but internally the encryption and decryption of the data is symmetric by using the same shared secret.
 
-*The message size for public-key encryption algorithms must smaller than $p - 1$ or even smaller. As a result, public-key algorithms are commonly used to encrypt the secret of the symmetric key algorithms!* They are also slow, because they do complex mathematical operations with large numbers.
+*The message size for public-key encryption algorithms must smaller than $`p - 1`$ or even smaller. As a result, public-key algorithms are commonly used to encrypt the secret of the symmetric key algorithms!* They are also slow, because they do complex mathematical operations with large numbers.
+
+> [!Important]
+> On the Moodle exam, you will get all Diffie-Hellman parameters and ElGamal encrypted message. Parameter $p$ is 1024 bits, so **you will notice some big numbers**, which you should be able to copy regardless.  Decrypt the message by applying the above.
 
 
-> In the Moodle exam, you will get all Diffie-Hellman parameters and ElGamal encrypted message. Parameter $p$ is 1024 bits, so **you will notice some big numbers**, which you should be able to copy.  Decrypt the message by applying the above.
-> Covert the resulting integer to ASCII; reverse the process (in Python) `m_int = int.from_bytes(sentence.encode('ASCII'), "big")`, which was used to convert the message into integer. You don't have to break anything here, just apply the equations to decrypt the message.
+Covert the resulting integer to ASCII; reverse the process (in Python) `m_int = int.from_bytes(sentence.encode('ASCII'), "big")`, which was used to convert the message into integer. You don't have to break anything here, just apply the equations to decrypt the message.
 
+The exam parameters are only for educational use, and $p$ is not safe prime. The security depends on the correct generation of the parameters. The original Diffie-Hellman is also vulnerable to [man-in-the-middle attack.](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) 
 
-
-> [!WARNING]
-> The exam parameters are only for educational use, and $p$ is not safe prime. The security depends on the correct generation of the parameters. The original Diffie-Hellman is also vulnerable to [man-in-the-middle attack.](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) 
-> 
 
 <details><summary>On high level, with modern public-key algorithms, the encryption sequence can be following. (click me!)</summary>
 
