@@ -317,7 +317,7 @@ We have ultimate trust for these authorities.
 
 The flow behind the scenes can be simplified as follows:
 
-1. **Certificate Presentation**: When you connect to a secure website, it presents its SSL/TLS certificate to your browser.
+1. **Certificate Presentation**: When you connect to a secure website, it presents its TLS certificate to your browser.
     
 2. **Certificate Validation**: Your browser checks the certificate's validity. This involves verifying that it hasn't expired and that it's signed by a trusted CA.
     
@@ -327,7 +327,7 @@ The flow behind the scenes can be simplified as follows:
     
 5. **Encryption Algorithms Confirmation**: The browser also verifies the encryption methods (ciphers) used in the certificate to ensure they meet current security standards.
 
-> In this task, we attempt to do the same manually with some command-line tool.
+> In this task, we attempt to do the same manually with some command-line tools.
 
 
 [`curl`](https://curl.se/) is the de-facto way to interact with websites from command line.
@@ -365,7 +365,7 @@ With command `curl -v <website>` you can also see the process of certificate val
 > GET / HTTP/1.1
 ```
 
-We can see that `curl` does the validation for us. How it happens? Internally, `curl` depends on some TLS library, which is usually [`openssl`](https://www.openssl.org/). 
+We can see that `curl` does the validation for us. How it happens? Internally, `curl` depends on some TLS library, which is usually [`OpenSSL`](https://www.openssl.org/). 
 
 You can, for example, use `openssl` to check all the certificates the server provides for you:
 
@@ -388,10 +388,16 @@ Certificate chain
 ...
 ```
 
-> Choose some website and play around with `curl` and `openssl`. 
-> Who has issued the certificate? 
-> For what exact domain it has been certificated? 
-> When it expires? 
-> What is the encryption algorithm and key size?
-> Can you validate it manually as well with `openssl verify`, if you download the certificate and possible other parts? 
-> If you can't, explain how this process typically happens on Linux and what parts you might need for it. 
+ > **Experiment with `curl` and `openssl` on a chosen website. Include the commands and try to answer for the following questions:**
+  - **Who has issued the certificate?**
+    - This helps identify the Certificate Authority (CA) that authenticated the website's identity.
+  - **For what exact domain it has been certificated?**
+    - Certificates are issued for specific domain names, ensuring you're communicating with the intended website.
+  - **When does it expire?**
+    - TLS certificates have a validity period. Knowing the expiration date is important for maintaining the website's security.
+  - **What is the encryption algorithm and key size?**
+    - This information provides insight into the strength and type of encryption used for securing communications.
+  - **Manual validation with `openssl verify`:**
+    - Attempt to manually validate the website's certificate using `openssl verify`. If you download the certificate and possibly other parts, can you verify it?
+  - **Troubleshooting failed validation:**
+    - If manual validation fails, explain how this process typically happens on Linux and what components might be necessary. This can include understanding the role of root and intermediate certificates, and how to construct a complete certificate chain for verification.
