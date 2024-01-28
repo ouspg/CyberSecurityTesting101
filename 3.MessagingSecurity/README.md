@@ -16,12 +16,14 @@ If you would like to know more about the topic, check out the courses **521244S 
 
 You can obtain up to five points from this exercise.
 
-You are not required to do tasks in order, but especially the first one is important.
+You are not required to do tasks in order, but it is recommended this time. They build knowledge on top of each other. 
 
 | Task # | Points | Description |
 | ---- | :--: | ---- |
 | Task 1 | 3 | The concept of computational complexity (Moodle exam) |
-| Task 2 | 2 | Digital identity and trust (Return to GitHub) |
+| Task 2 | 1 | Digital signatures (Moodle exam) |
+| Task 3 | 1 | Digital identity and trust (Return to GitHub) |
+|  |  |  |
 
 Later tasks will require more time investment when compared to the previous tasks to acquire the relative amount of points. 
 
@@ -276,7 +278,7 @@ When proving the integrity, the message content is hashed, and this hash value i
 
 ### Task assignment
 
-Alice has attempted to send a message for you!
+Alice has attempted to send a message for Bob (you!).
 
 The message is in the “messages” folder. However, there are many *wannabe Alice's* who are not the real and try to confuse and scam you. 
 You cannot be sure which message is the correct one.
@@ -300,3 +302,96 @@ To read the QR codes, you need to install `zbar`.
 ## Task 3: Digital identity and trust
 
 > Return this task to GitHub
+
+Take a look what [digital certificates](https://en.wikipedia.org/wiki/Public_key_certificate) are.
+Public-key cryptography is also the foundation of the certificates.
+
+When you use a website, and if this website uses TLS connection, it has  certificate, which is used as base for secure connection.
+Certificate can be thought as digital identity, which is issued for specific purpose.
+
+When the browser initiates the connection, certificate authenticity is validated by the browser. The domain name of the website is tied to the certificate, and in that way the browser attempts to verity that data is indeed coming from the claimed entity.
+Once authenticity is validated and an encrypted connection is formed, then the browser accesses the content of the website.
+
+Digital certificates are issued by trusted entities known as Certificate Authorities (CAs).
+We have ultimate trust for these authorities.
+
+The flow behind the scenes can be simplified as follows:
+
+1. **Certificate Presentation**: When you connect to a secure website, it presents its SSL/TLS certificate to your browser.
+    
+2. **Certificate Validation**: Your browser checks the certificate's validity. This involves verifying that it hasn't expired and that it's signed by a trusted CA.
+    
+3. **Domain Verification**: The browser ensures that the certificate's domain name matches the website's domain. This step is crucial to prevent man-in-the-middle attacks.
+    
+4. **Certificate Revocation Check**: The browser may check if the certificate has been revoked by the CA, indicating it should no longer be trusted.
+    
+5. **Encryption Algorithms Confirmation**: The browser also verifies the encryption methods (ciphers) used in the certificate to ensure they meet current security standards.
+
+> In this task, we attempt to do the same manually with some command-line tool.
+
+
+[`curl`](https://curl.se/) is the de-facto way to interact with websites from command line.
+
+With command `curl -v <website>` you can also see the process of certificate validation and secure connection initiation.
+
+```sh
+» curl  -v https://oulu.fi
+
+*   Trying 130.231.240.1:443...
+* Connected to oulu.fi (130.231.240.1) port 443
+* ALPN: curl offers h2,http/1.1
+* (304) (OUT), TLS handshake, Client hello (1):
+*  CAfile: /etc/ssl/cert.pem
+*  CApath: none
+* (304) (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+* TLSv1.2 (IN), TLS handshake, Server finished (14):
+* TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+* TLSv1.2 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.2 (OUT), TLS handshake, Finished (20):
+* TLSv1.2 (IN), TLS change cipher, Change cipher spec (1):
+* TLSv1.2 (IN), TLS handshake, Finished (20):
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN: server did not agree on a protocol. Uses default.
+* Server certificate:
+*  subject: C=FI; ST=Pohjois-Pohjanmaa; O=University of Oulu; CN=www.oulu.fi
+*  start date: Sep 13 00:00:00 2023 GMT
+*  expire date: Sep 12 23:59:59 2024 GMT
+*  subjectAltName: host "oulu.fi" matched cert's "oulu.fi"
+*  issuer: C=NL; O=GEANT Vereniging; CN=GEANT OV RSA CA 4
+*  SSL certificate verify ok.
+* using HTTP/1.x
+> GET / HTTP/1.1
+```
+
+We can see that `curl` does the validation for us. How it happens? Internally, `curl` depends on some TLS library, which is usually [`openssl`](https://www.openssl.org/). 
+
+You can, for example, use `openssl` to check all the certificates the server provides for you:
+
+```sh
+» openssl s_client -connect oulu.fi:443 -showcerts
+CONNECTED(00000003)
+depth=2 C = US, ST = New Jersey, L = Jersey City, O = The USERTRUST Network, CN = USERTrust RSA Certification Authority
+verify return:1
+depth=1 C = NL, O = GEANT Vereniging, CN = GEANT OV RSA CA 4
+verify return:1
+depth=0 C = FI, ST = Pohjois-Pohjanmaa, O = University of Oulu, CN = www.oulu.fi
+verify return:1
+---
+Certificate chain
+ 0 s:C = FI, ST = Pohjois-Pohjanmaa, O = University of Oulu, CN = www.oulu.fi
+   i:C = NL, O = GEANT Vereniging, CN = GEANT OV RSA CA 4
+   a:PKEY: rsaEncryption, 2048 (bit); sigalg: RSA-SHA384
+   v:NotBefore: Sep 13 00:00:00 2023 GMT; NotAfter: Sep 12 23:59:59 2024 GMT
+-----BEGIN CERTIFICATE-----
+...
+```
+
+> Choose some website and play around with `curl` and `openssl`. 
+> Who has issued the certificate? 
+> For what exact domain it has been certificated? 
+> When it expires? 
+> What is the encryption algorithm and key size?
+> Can you validate it manually as well with `openssl verify`, if you download the certificate and possible other parts? 
+> If you can't, explain how this process typically happens on Linux and what parts you might need for it. 
