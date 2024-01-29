@@ -315,7 +315,7 @@ QR code contains a public key that uses PGP's ASCII-armoured format.
 
 `sudo pacman -Sy zbar`
 
-Then, from the command line, you can use `zbarimg` to read QR codes.
+Then, from the command line, you can use [`zbarimg`](https://man.archlinux.org/man/zbarimg.1) to read QR codes.
 
 Extra: if you want to [learn more about QR codes](https://qr.blinry.org/).
 
