@@ -32,7 +32,7 @@ The course VM has Wireshark pre-installed.
 
 With Wireshark, you can use [display filters](https://wiki.wireshark.org/DisplayFilters) to get a more specific overview of what is happing in the captured traffic in a protocol basis, for example. Look to the wiki [main page](https://wiki.wireshark.org/) for more.
 
-For this task, there is a pre-captured `[.pcap](https://en.wikipedia.org/wiki/Pcap)` file from some LAN network traffic. 
+For this task, there is a pre-captured [`.pcap`](https://en.wikipedia.org/wiki/Pcap) file from some LAN network traffic. 
 You know that the packet capture includes *an insecure* connection with a login attempt to *the router* with a weak and custom authentication protocol.
 
 What is the login password?
@@ -47,7 +47,7 @@ What is the login password?
 
 > Return this task to GitHub
 
-On this task, we make a small network discovery exercise by capturing packets by ourselves with Wireshark, and also do some network mapping and service scanning with [`nmap.`](https://nmap.org/)
+On this task, we make a small network analysis exercise by capturing packets by ourselves with Wireshark, and also do some network mapping and service scanning with [`nmap.`](https://nmap.org/)
 
 The target environment is Docker's [Example Voting App](https://github.com/dockersamples/example-voting-app/tree/main).
 You should clone this repository, *and navigate to this folder in terminal*.
@@ -97,13 +97,13 @@ result -. "Fetches results" .-> db
 However, in this case, both networks are available for testing purposes.
 
 To get started, you need to run the following commands to get information about the subnets and network interfaces.
-Correct network interface information is needed for Wireshark, so you can start capturing traffic from the correct place. Subnets work are starting point to discover the IP address of the services.
+Correct network interface information is needed for Wireshark, so you can start capturing traffic from the correct place. Subnets work as starting point to discover the IP address of the services.
 
 **We could look the IP addresses directly from the Docker daemon, but that will spoil the fun with `nmap`!**
 
-<details><summary>Command list (click me!)</summary>
+
 ```sh
-# Network interface is br-<networkid> for the named  Docker network
+# Network interface is br-<network-id> for the named  Docker network
 docker network ls # To see different Docker networks
 # To list network interfaces and verify previous
 ip addr 
@@ -111,35 +111,33 @@ ip addr
 docker network inspect <id/name> | jq '.[].IPAM' 
 ```
 
-</details>
+> Answer the following questions as part of this task. They also help you to proceed.
 
-> Answer to the following questions as part of this task. They also help you to proceed.
+### Q1: Getting started with `nmap`
 
-## Q1: Getting started with `nmap`
-
-Find out, how you can use `nmap` to discover what hosts are up on the selected subnet. Scan both subnets (`front-tier` and `back-tier).
+Find out, how you can use `nmap` to discover what hosts are up on the selected subnet. Scan both subnets (`front-tier` and `back-tier`).
 *Then scan every host for what ports and services they have, and for other possible fingerprinting information.*
 
 > Return all the commands, their outputs, and briefly explain the results. What IP belongs to which service? Was `nmap` able to identify server information somewhat correctly?
 
-## Q2: Capturing the voting traffic
+### Q2: Capturing the voting traffic
 
 If you haven't found already, at this point you should know which IP addresses are for voting and result interface, which are accessible by browsers.
 *Capture both networks (front, back) with Wireshark*, and play around by casting votes and viewing results. 
 
 > What protocols you can see from the captured data and in which networks?
 
-## Q3: Unique votes?
+### Q3: Unique votes?
 
 Somehow, a unique vote is determined. Can you describe, based on the network analysis, *how the unique vote is determined?* What if you are able to intercept this traffic? Or even *spoof* the uniqueness? What this could mean for the voting results.
 
-## Q4: `nmap` aggressive?  
+### Q4: `nmap` aggressive?  
 
 Start capturing `front-tier` network with Wireshark.
 Run `nmap -A` to some service in this network. 
 Can you spot the traffic it generates? What protocols it uses? What this option is supposed to do? Can it be disturbing for the services?
 
-## Q5: Promiscuous mode?
+### Q5: Promiscuous mode?
 
 Wireshark has promiscuous mode.
 It can be enabled and disabled from capture → options, and there is a check where it can be enabled and disabled. 
@@ -149,3 +147,5 @@ What does promiscuous mode do, and why is it important to have it on when examin
 ## Task 3) ARP poisoning with MitM 
 
 > Return this task to GitHub
+
+TBA
