@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+    alice:
+        image: quay.io/curl/curl:latest
+        container_name: alice
+        restart: always
+        entrypoint: sleep infinity
+        networks:
+            - mitm
+    bob:
+        image: python:latest
+        container_name: bob
+        restart: always
+        volumes:
+            - ./bob:/var/www
+        working_dir: /var/www
+        networks:
+            - mitm
+        entrypoint: python -m http.server 80
+    mallory:
+        privileged: true
+        # cap_add:
+        #   - NET_ADMIN
+        build: .
+        container_name: mallory
+        entrypoint: sleep infinity
+        volumes:
+            - ./scapy:/scapy
+        sysctls:
+            - net.ipv4.ip_forward=1
+            - net.ipv6.conf.all.forwarding=1
+            - net.ipv4.conf.all.send_redirects=0
+        networks:
+            - mitm
+
+networks:
+    mitm:

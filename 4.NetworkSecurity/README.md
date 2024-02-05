@@ -149,3 +149,5 @@ What does promiscuous mode do, and why is it important to have it on when examin
 > Return this task to GitHub
 
 TBA
+
+To show local neighbor tables, including ARP and NDP (Neighbor Discovery Protocol) entries table status, run command `ip neigh show`.
