@@ -1,29 +1,33 @@
-version: "3.7"
+version: "3.8"
 
 services:
     alice:
         image: quay.io/curl/curl:latest
         container_name: alice
+        mac_address: 02:42:ac:1f:00:02
         restart: always
         entrypoint: sleep infinity
         networks:
-            - mitm
+          mitm:
+            ipv4_address: 172.31.0.2
     bob:
         image: python:latest
         container_name: bob
+        mac_address: 02:42:ac:1f:00:03
         restart: always
         volumes:
             - ./bob:/var/www
         working_dir: /var/www
         networks:
-            - mitm
+          mitm:
+            ipv4_address: 172.31.0.3
         entrypoint: python -m http.server 80
     mallory:
-        privileged: true
-        # cap_add:
-        #   - NET_ADMIN
+        cap_add:
+          - NET_ADMIN
         build: .
         container_name: mallory
+        mac_address: 02:42:ac:1f:00:04
         entrypoint: sleep infinity
         volumes:
             - ./scapy:/scapy
@@ -32,7 +36,12 @@ services:
             - net.ipv6.conf.all.forwarding=1
             - net.ipv4.conf.all.send_redirects=0
         networks:
-            - mitm
+          mitm:
+            ipv4_address: 172.31.0.4
 
 networks:
-    mitm:
+  mitm:
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.31.0.0/24

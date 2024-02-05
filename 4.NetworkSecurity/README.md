@@ -16,7 +16,7 @@ You are not required to do tasks in order, but it is recommended.
 | ---- | :--: | ---- |
 | Task 1 | 1 | Basics of packet analysis (Moodle exam) |
 | Task 2 | 2 | Network discovery and analysis (GitHub) |
-| Task 3 | 2 | ARP poisoning with MitM (GitHub) |
+| Task 3 | 2 | ARP poisoning and MitM (GitHub) |
 
 Later tasks will require more time investment when compared to the previous tasks to acquire the relative amount of points. 
 
@@ -144,10 +144,63 @@ It can be enabled and disabled from capture → options, and there is a check wh
 Find out what promiscuous mode does by capturing packets with it being enabled and disabled.
 What does promiscuous mode do, and why is it important to have it on when examining network traffic, for example as a network engineer?
 
-## Task 3) ARP poisoning with MitM 
+## Task 3) ARP poisoning and Man-in-the-Middle Attack (MITM) 
 
 > Return this task to GitHub
 
-TBA
+What happens if someone is able to alter network routing of unencrypted traffic, and makes *an active Man-in-the-Middle attack*?
 
-To show local neighbor tables, including ARP and NDP (Neighbor Discovery Protocol) entries table status, run command `ip neigh show`.
+Let's try that with practice, by using [Address Resolution Protocol (ARP) cache poisoning](https://en.wikipedia.org/wiki/ARP_spoofing) to alter network routing and further making an traffic-altering proxy.
+You can take a look for [video](https://youtu.be/tXzKjtMHgWI) explaining Address Resolution Protocol and another [video](https://youtu.be/A7nih6SANYs) explaining the ARP Poisoning. 
+
+We have once again `docker-compose` environment as follows, where there is one container per entity, with the names are same as parties in the graph.
+
+```mermaid
+graph TD
+    Alice[Alice<br>IP: 172.31.0.2<br>MAC: 02:42:ac:1f:00:02] -->|Normal Traffic| Bob[Bob<br>IP: 172.31.0.3<br>MAC: 02:42:ac:1f:00:03]
+    Mallory[Mallory<br>IP: 172.31.0.4<br>MAC: 02:42:ac:1f:00:04] -- "ARP Poisoning" --> Alice & Bob
+    Alice -- "ARP Spoofed Traffic" --> Mallory
+    Mallory -- "Intercepted Traffic" --> Bob
+
+    subgraph Docker Network ["Docker Network (MITM)"]
+    direction TB
+    Alice
+    Bob
+    Mallory
+    end
+    classDef attack stroke:#f00,stroke-width:2px;
+    classDef spoofed fill:#fe9,stroke:#333,stroke-width:2px;
+
+    class Alice,Bob normal;
+    class Mallory attack;
+    linkStyle 1 stroke:#f00,stroke-width:2px,dash: 5,5;
+    linkStyle 2 stroke:#f00,stroke-width:2px,dash: 5,5;
+    linkStyle 3 stroke:#fbb,stroke-width:2px;
+```
+
+
+The graph describes about situation, where Mallory has access to the same network as Alice and Bob. Alice is trying to connect with Bob, but because Mallory has managed to poison ARP cache, all the traffic is routed through Mallory.
+
+
+The simulation can be thought as follows: [`curl`](https://curl.se/) command simulates Alice. Bob is running webserver in his IP address, and there is a simple webpage, which is accessed with `curl`. 
+
+
+
+To start environment, run `docker-compose up` in this folder.
+To check that Alice, Bob and Mallory containers are running, run `docker container ls`.
+To open shell in container, run `docker exec -it <name> sh`, where container name is `alice`, `bob` or `mallory`.
+For example, you can run `alice` container, use `curl` there to query Bob's webpage. This will return: `This is Bob's web server!`.
+
+You can verify the network details again by using `docker network ls` command, and then `inspect` subcommand.
+
+**It is useful to capture data from that interface with Wireshark all the time during this exercise, in debugging purposes!**
+
+### ARP poisoning with scapy
+
+We will use [scapy](https://scapy.net/) to send ARP packets to the network.
+
+
+To show local neighbor tables including ARP and NDP (Neighbor Discovery Protocol) entries table status e.g. in Alice's container, run command `ip neigh show`.
+You should notice here that routing changes based on the ARP packets.
+
+### Active intercepting with [`mitmproxy`](https://mitmproxy.org/)
