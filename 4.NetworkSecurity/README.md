@@ -33,7 +33,7 @@ The course VM has Wireshark pre-installed.
 With Wireshark, you can use [display filters](https://wiki.wireshark.org/DisplayFilters) to get a more specific overview of what is happing in the captured traffic in a protocol basis, for example. Look to the wiki [main page](https://wiki.wireshark.org/) for more.
 
 For this task, there is a pre-captured [`.pcap`](https://en.wikipedia.org/wiki/Pcap) file from some LAN network traffic. 
-You know that the packet capture includes *an insecure* connection with a login attempt to *the router* with a weak and custom authentication protocol.
+You know that the packet capture includes *an insecure* connection with a login attempt to *the router* with a weak and custom authentication protocol. The authentication may use some sort of *encoding...*
 
 What is the login password?
 
