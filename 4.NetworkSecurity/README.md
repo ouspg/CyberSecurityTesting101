@@ -153,7 +153,7 @@ What happens if someone is able to alter network routing of unencrypted traffic,
 Let's try that with practice, by using [Address Resolution Protocol (ARP) cache poisoning](https://en.wikipedia.org/wiki/ARP_spoofing) to alter network routing and further making an traffic-altering proxy.
 You can take a look for [video](https://youtu.be/tXzKjtMHgWI) explaining Address Resolution Protocol and another [video](https://youtu.be/A7nih6SANYs) explaining the ARP Poisoning. 
 
-We have once again `docker-compose` environment as follows, where there is one container per entity, with the names are same as parties in the graph.
+We have once again `docker-compose` environment as follows, where there is one container per entity, with the names and other details are same as parties in the graph.
 
 ```mermaid
 graph TD
@@ -182,25 +182,61 @@ graph TD
 The graph describes about situation, where Mallory has access to the same network as Alice and Bob. Alice is trying to connect with Bob, but because Mallory has managed to poison ARP cache, all the traffic is routed through Mallory.
 
 
-The simulation can be thought as follows: [`curl`](https://curl.se/) command simulates Alice. Bob is running webserver in his IP address, and there is a simple webpage, which is accessed with `curl`. 
+We will use following method for simulating: [`curl`](https://curl.se/) command simulates Alice. Bob is running webserver in his IP address, and there is a simple webpage, which will be accessed with `curl`. 
 
 
-
-To start environment, run `docker-compose up` in this folder.
-To check that Alice, Bob and Mallory containers are running, run `docker container ls`.
-To open shell in container, run `docker exec -it <name> sh`, where container name is `alice`, `bob` or `mallory`.
-For example, you can run `alice` container, use `curl` there to query Bob's webpage. This will return: `This is Bob's web server!`.
+ * To start environment, run `docker-compose up` in this folder.
+ * To check that Alice, Bob and Mallory containers are running, run `docker container ls`.
+ * To open shell in container, run `docker exec -it <name> bash`, where container name is `alice`, `bob` or `mallory`. `alice` has only `sh` shell. 
+ * For example, you can test `alice`'s container, use `curl` in there to query Bob's webpage. This will return: `This is Bob's web server!`.
 
 You can verify the network details again by using `docker network ls` command, and then `inspect` subcommand.
 
-**It is useful to capture data from that interface with Wireshark all the time during this exercise, in debugging purposes!**
+Mallory's container **makes kernel-level port forwarding enabled**; this allows packets to go automatically for the correct destination as Mallory has clean ARP table.
 
-### ARP poisoning with scapy
 
-We will use [scapy](https://scapy.net/) to send ARP packets to the network.
+However, this alters the host system and all the containers as well, so it is recommended to verify afterwards that it is disabled after if not using virtual machine, while the change should be only temporal.
+
+Check that `cat /proc/sys/net/ipv4/ip_forward` is non-zero.
+
+
+**It is useful to capture data from that interface with Wireshark all the time during this exercise, for debugging purposes!**
+
+
+In Mallory's container, all the source files are automatically mounted to `/data` folder.
+
+### ARP poisoning with [scapy](https://scapy.net/)
+
+We will use `scapy` to send ARP packets to the network.
+You will find a template Python script from [src](src) folder.
+You need to place IP and MAC addresses correctly and fill the packet sniffing function.
 
 
 To show local neighbor tables including ARP and NDP (Neighbor Discovery Protocol) entries table status e.g. in Alice's container, run command `ip neigh show`.
-You should notice here that routing changes based on the ARP packets.
+You should notice there that routing changes based on the ARP packets.
 
 ### Active intercepting with [`mitmproxy`](https://mitmproxy.org/)
+
+
+Can you use `mitmproxy` to change the Bob's webpage to return `This is not Bob!` for Alice?
+
+Open another shell session with Mallor's container, and modify the sample script from `src` folder. Consult the documentation.
+
+You must modify userspace routing e.g. by using following command, which redirects traffic from 80 port to 8080 for `mitmproxy`. 
+
+```sh
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
+```
+
+> [!Important]
+> As a mark of of completion of this task, do the following.
+
+* Submit all the code you have developed/changed for this assignment. 
+* Highlight any challenges you encountered and what possible work is missing. Did you learn anything? 
+* Provide a screenshot from successful sniffing with `scapy`
+* Demonstrate the successful execution of your ARP poisoning and MITM attack, capture the network traffic using Wireshark during the following operations:
+  * The ARP spoofing process where you manipulate the ARP tables of the involved devices.
+  * The moment you execute a curl request to the target server (Bob) from the victim's machine (Alice).
+  * How `mitmproxy` intercepts and modifies the HTTP traffic between Alice and Bob.
+
+Ensure the Wireshark capture (`.pcap` file) is concise and focused on the relevant traffic for easier review.

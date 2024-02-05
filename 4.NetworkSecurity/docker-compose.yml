@@ -30,7 +30,7 @@ services:
         mac_address: 02:42:ac:1f:00:04
         entrypoint: sleep infinity
         volumes:
-            - ./scapy:/scapy
+            - ./src:/data
         sysctls:
             - net.ipv4.ip_forward=1
             - net.ipv6.conf.all.forwarding=1
