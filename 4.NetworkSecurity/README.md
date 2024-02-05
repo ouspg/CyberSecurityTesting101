@@ -191,6 +191,7 @@ We will use following method for simulating: [`curl`](https://curl.se/) command 
  * For example, you can test `alice`'s container, use `curl` in there to query Bob's webpage. This will return: `This is Bob's web server!`.
 
 You can verify the network details again by using `docker network ls` command, and then `inspect` subcommand.
+**It is useful to capture data from that interface with Wireshark all the time during this exercise, for debugging purposes!**
 
 Mallory's container **makes kernel-level port forwarding enabled**; this allows packets to go automatically for the correct destination as Mallory has clean ARP table.
 
@@ -200,10 +201,9 @@ However, this alters the host system and all the containers as well, so it is re
 Check that `cat /proc/sys/net/ipv4/ip_forward` is non-zero.
 
 
-**It is useful to capture data from that interface with Wireshark all the time during this exercise, for debugging purposes!**
 
 
-In Mallory's container, all the source files are automatically mounted to `/data` folder.
+> In the Mallory's container, all the source files are automatically mounted to `/data` folder.
 
 ### ARP poisoning with [scapy](https://scapy.net/)
 
