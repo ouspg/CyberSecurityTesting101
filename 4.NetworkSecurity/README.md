@@ -38,6 +38,9 @@ You know that the packet capture includes *an insecure* connection with a login 
 
 What is the login password?
 
+**The fully decoded data is in format `User: <user>;Password: <password>;`, so you will know when you find it!** 
+
+
 > In the Moodle exam, you will get link for `.pcap` file. Return the password.
 
 > [!Note]
