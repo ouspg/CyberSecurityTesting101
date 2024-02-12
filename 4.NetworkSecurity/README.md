@@ -17,6 +17,7 @@ You are not required to do tasks in order, but it is recommended.
 | Task 1 | 1 | Basics of packet analysis (Moodle exam) |
 | Task 2 | 2 | Network discovery and analysis (GitHub) |
 | Task 3 | 2 | ARP poisoning and MitM (GitHub) |
+|  |  |  |
 
 Later tasks will require more time investment when compared to the previous tasks to acquire the relative amount of points. 
 
