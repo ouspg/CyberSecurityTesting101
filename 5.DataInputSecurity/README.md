@@ -18,7 +18,7 @@ The **Common Weakness Enumeration** (CWE) is a well-known category system [^2]
 We can take a look at CWE's top 25 most dangerous software weaknesses from 2022 [^3] and 2023 [^4], and see that *most of the most dangerous weaknesses are related to data processing of the software, especially to data that can be thought as **input.***
 
 
-We can further see this by looking into the *Top 10 Known Exploited Vulnerabilities Catalog from 2023, which was published by the United States' [Cybersecurity and Infrastructure Security Agency (CISA)](https://www.dhs.gov/cisa/cybersecurity-division).
+We can further see this by looking into the *Top 10 Known Exploited Vulnerabilities Catalog from 2023*, which was published by the United States' [Cybersecurity and Infrastructure Security Agency (CISA)](https://www.dhs.gov/cisa/cybersecurity-division).
 It maps the usage of known exploits to weakness categories and ranks the misuse of the specific weaknesses after the vulnerability in the software has been found. [^5] [^6]
 We have more about software-specific vulnerabilities on the final week's exercises.
 
@@ -65,7 +65,20 @@ To prevent this, input sanitisation would involve stripping out or encoding pote
 
 Input sanitisation can also fail, for example, if you do not process every dangerous character, or if there is a way to undo or bypass this process.
 
+## Identifying input-related threats
+
+Whenever the program receives data as input through some interface, *there is always a risk for a vulnerability.*
+Is the data processed correctly, noting all possible scenarios?
+
+To effectively identify input-specific threats, one must always consider the final destination and use of the input data within the software's ecosystem; for example, what if it is passed *directly* as a parameter for the shell?
+
+In that case, the environment for the data is shell, and that opens up the possibility for exploitation using shell-supported syntax, allowing attackers to manipulate the input in ways that can trigger unintended actions by the software.
+Weakness in this context is usually called as *CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')* [^9]
+
+If we go even deeper, how is the data passed into the computer's memory? Does it fit for its reserved slot? If it does not, we will have some memory problems. This is historically one of the most dangerous weaknesses; *CWE-787: Out-of-bounds Write*. [^10]
+
 The exercises focus purely on input processing this week, mostly by using manual means for testing it.
+In the next week, we will take a look into *fuzzing*, which attempts to automate the process of identifying input-related weaknesses. 
 
 ## Grading
 
@@ -78,7 +91,7 @@ All the tasks should be returned to GitHub this week.
 | Task # | Points | Description |
 | ---- | :--: | ---- |
 | Task 1 | 2 | Basics of command injections |
-| Task 2 | 2 | Interceptions and SQL injections |
+| Task 2 | 2 | Interceptions, SQL injections and XSS |
 | Task 3 | 1 | TBA |
 |  |  |  |
 
@@ -122,11 +135,11 @@ On the left, close to the bottom, there is **DVWA Security** section; on there y
 You must also set this to other than impossible before you can actually make an injection. 
 You can adjust the injection difficulty with the same setting (how good is the input validation/sanitisation!).
 
-# Task 2: Interceptions and SQL injections
+# Task 2: Interceptions, SQL injections and XSS
 
 TBA
 
-# Task 3:  TBA
+# Task 3: TBA
 
 
  [^1]: [Software bug](https://en.wikipedia.org/wiki/Software_bug)
@@ -137,4 +150,6 @@ TBA
 [^6]: [Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
 [^7]: [Email Address Regular Expression That 99.99% Works.  Disagree?](https://emailregex.com)
 [^8]: [Cross Site Scripting](https://owasp.org/www-community/attacks/xss/)
+[^9]: [CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](https://cwe.mitre.org/data/definitions/78.html)
+[^10]: [CWE-787: Out-of-bounds Write](https://cwe.mitre.org/data/definitions/787.html)
 
