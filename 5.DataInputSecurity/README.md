@@ -20,6 +20,7 @@ We can take a look at CWE's top 25 most dangerous software weaknesses from 2022 
 
 We can further see this by looking into the *Top 10 Known Exploited Vulnerabilities Catalog from 2023*, which was published by the United States' [Cybersecurity and Infrastructure Security Agency (CISA)](https://www.dhs.gov/cisa/cybersecurity-division).
 It maps the usage of known exploits to weakness categories and ranks the misuse of the specific weaknesses after the vulnerability in the software has been found. [^5] [^6]
+
 We have more about software-specific vulnerabilities on the final week's exercises.
 
 ![KEV_top10.png](KEV_top10.png)
@@ -27,7 +28,7 @@ We have more about software-specific vulnerabilities on the final week's exercis
 Memory errors are typically related to input processing, and they are also handled more in the next week.
 Their dangers and exploitation of them are handled more in-depth on the course *Cyber Security III: Hardware and Software Security.*
 
-From the list, 4, 5, 6, 8 and 9th are also related in some way to input. 
+From the image, 4, 5, 6, 8 and 9th are also related in some way to input. 
 Typically, the software operates through interfaces. 
 Software functions by executing predefined sequences of operations, which are directed through user interfaces or automated inputs. 
 The software is designed to follow a specific workflow, branching into different execution paths based on its programming logic.
@@ -91,9 +92,8 @@ All the tasks should be returned to GitHub this week.
 | Task # | Points | Description |
 | ---- | :--: | ---- |
 | Task 1 | 2 | Basics of command injections |
-| Task 2 | 2 | Interceptions, SQL injections and XSS |
-| Task 3 | 1 | TBA |
-|  |  |  |
+| Task 2 | 1 | Interceptions and SQL injections |
+| Task 3 | 2 | Advanced Cross-site Scripting (XSS) |
 
 ## Task 1: Basics of command injections
 
@@ -102,7 +102,6 @@ All the tasks should be returned to GitHub this week.
 Take a look at the sample Python application [ping_service.py](ping_service.py).
 
 It has a [command injection](https://owasp.org/www-community/attacks/Command_Injection) weakness.
-
 
 Assuming that you have `ping` command and Python on your system, you can run it as
 
@@ -135,21 +134,193 @@ On the left, close to the bottom, there is **DVWA Security** section; on there y
 You must also set this to other than impossible before you can actually make an injection. 
 You can adjust the injection difficulty with the same setting (how good is the input validation/sanitisation!).
 
-# Task 2: Interceptions, SQL injections and XSS
+# Task 2: Interceptions and SQL injections
 
-TBA
+> Return this task to GitHub
 
-# Task 3: TBA
+Web-based applications are often exposed to the public internet, and that makes them observable to anyone.  
+That also means that the risk for misuse can be higher. 
+As a result, we have had increased focus on identifying web-related security issues, and historically we have seen quite many of them.
+
+Typically, these applications are intended to be used by their clients, e.g. mobile apps or just browsers.
+These clients connect to the server through different interfaces, possibly using different protocols.
+The end-user uses the client based on its user interface.
+Overall, this brings us quite many interfaces.
+
+What could go wrong, if your web application does not handle the user or any data input correctly, *on every interface?* Or proper authentication mechanisms are not applied?
+What if someone decides *to not use the official clients, while nobody thinks it is normal, like Mallory?*
 
 
- [^1]: [Software bug](https://en.wikipedia.org/wiki/Software_bug)
- [^2]: [Common Weakness Enumeration (CWE)](https://cwe.mitre.org)
- [^3]: [2022 CWE Top 25 Most Dangerous Software Weaknesses](https://cwe.mitre.org/top25/archive/2022/2022_cwe_top25.html)
- [^4]: [2023 CWE Top 25 Most Dangerous Software Weaknesses](https://cwe.mitre.org/top25/archive/2023/2023_top25_list.html)
+```mermaid
+graph LR
+    client[Client] -- "1. Sends request" --> server[Server]
+    server -- "2. Validates request &\nresponds" --> client
+    mallory[Mallory] -- "3. Attempts direct\naccess to Server" --> server
+
+    class client,server default;
+    class mallory attacker;
+    class security security;
+
+```
+
+For this exercise, we explore some of those scenarios, by going to test one quite vulnerable web application, [OWASP's Juice Shop](https://github.com/juice-shop/juice-shop). 
+Its documentation is available [here.](https://pwning.owasp-juice.shop/companion-guide/latest/introduction/README.html)
+
+At the same time, we also try out one well-known security testing application, [Burp Suite's Community Edition](https://portswigger.net/burp). 
+We mainly use it as an intercepting proxy that sits between the browser and the webserver to intercept and manipulate requests exchange, like the following.
+
+```mermaid
+graph LR
+    client["Client (via Burp Browser)"] -- "1. Sends request" --> burp[Burp Suite]
+    burp -- "2. Intercepts &\nmodifies request (optional)" --> server[Server]
+    server -- "3. Validates request &\nresponds" --> burp
+    burp -- "4. Forwards response" --> client
+    mallory[Mallory] -- "6. Attempts to intercept\nvia Burp Suite" --> burp
+    mallory -- "6. Attempts to intercept\nvia Burp Suite" --> client 
+
+    class client,server default;
+    class mallory attacker;
+    class burp intercept;
+
+```
+
+You can also do most of the things just by using browser's developer tools or, for example, [Zed Attack Proxy (ZAP)](https://www.zaproxy.org).
+
+To install Burp Suite on Arch Linux, run
+
+```sh
+yay -S burpsuite
+```
+
+Take a look at Burp Suite's [documentation](https://portswigger.net/burp/documentation/desktop), especially “Getting Started” section.
+
+> [!Note]
+> If you happen to run ARM-based machine, you need to install Burp Suite from the webpage, as the Arch Linux does not bundle the Burp's own browser. On MacBooks, it is better to just use `brew` to install it.
+
+
+### Getting started with Juice Shop
+
+To start the Juice Shop server from the Docker image, run command
+
+```sh
+docker run --rm -p 3000:3000 bkimminich/juice-shop
+```
+
+And navigate to `localhost:3000` to explore this shop.
+If you already want to start recording all the traffic, you can do this by opening Burp Suite, locating Proxy → Intercept tabs, and opening Burp Suite's built-in browser.
+
+You will see all the HTTP requests on `Target` or `Proxy` tab if you play around with the website at this point. 
+
+### Task 2A) Logging in with SQL injection (0.5p)
+
+Take a look at what is SQL injection weakness CWE-89 [^11] [^12]. 
+
+Juice Shop's login is actually vulnerable for that — the value from the email field is directly passed as part of the SQL command.
+
+Try logging in with random credentials and observe traffic in Burp Suite. Try to trigger an error, based on how SQL syntax works.
+You can right-click the request on Burp Suite and send it to “Repeater”, where you can modify and send it easily again.
+You can also enable "intercepting": every request from Burp Browser will be paused on Burp before they are delivered to the server.
+
+Once you can trigger the error, check the response for that request. It might reveal quite something interesting.
+
+Now, modify the request so that *your input causes a bypass for the password check on the final SQL command*. As a result, you will log in as the first user.
+
+On Burp Suite, a successful request will return an authentication token, which is actually a [JWT token](https://jwt.io/). Decode it to see, as which user you have logged in.
+
+Neither the client side nor the server side had any kind of input validation.
+
+> Return the input you used in email field to log in.
+> Explain your final SQL command.
+> Return *decoded* JWT token.
+
+### Task 2B) Hidden products (0.5p)
+
+Take a look at the [Christmas Special Offer](https://pwning.owasp-juice.shop/companion-guide/latest/part2/injection.html#_order_the_christmas_special_offer_of_2014).
+
+The search field has input validation in place this time on the client side, but… there isn't such thing on the server side.
+
+How can you get a list of all products, including the deleted ones?
+
+> Return the input you use in search field to modify the inner SQL command and **also** include JSON data which contains all the products as response.
+
+
+# Task 3: Advanced Cross-site Scripting (XSS) 
+
+Cross-site Scripting (XSS) is yet another input-related problem, usually related to the lack of input sanitisation.
+Take a look at some of its definitions [^8] [^13]. 
+
+In practice, untrusted input data is reflected or directed to the browser in its original format.
+If the context is the browser's rendering context, the browser might render the HTML from the input as it is supposed to, or even run JavaScript.
+
+> We continue with the Juice Shop on this task.
+
+As a simple demonstration, you can just put the following input to the Juice Shop's search field:
+
+```html
+<iframe src="javascript:alert(`xss`)">
+```
+
+That XSS is not persistent, as it just reflects the used search parameter.
+
+XSS can be very dangerous as it can be used to get full control of the current website. 
+However, for example, the above XSS uses `iframe` as a base to bypass limitations, and it restricts access for the parent window object by default, as the script is not coming from the same origin.
+
+This limits a bit of what we can do, and we want to do something more, by combining multiple vulnerabilities!
+
+
+Juice Shop has released its new marketing video at http://localhost:3000/promotion. Viewing the page source or inspecting the traffic with Burp Suite shows you a couple of things:
+
+  1. The video is loaded from http://localhost:3000/video.
+  2. Subtitles are embedded on the page itself and they are in WebVTT format.
+  3. Subtitles are enclosed in a `<script>` tag.
+
+
+If you further inspect the traffic with Burp Suite, then you will notice that there is `Content-Location` header on the video's responses, which points to `/assets/` directory with a filename.
+If you take this whole path and append it to `localhost:3000`, you will find out that it also loads the video!
+If you change the file extension to `.vtt`, you get the subtitles as well, the same subtitles that were embedded in the `<script>` tag.
+
+
+Would it be possible to modify this subtitle file?
+
+As it happens, Juice Shop has an arbitrary [file upload vulnerability](https://pwning.owasp-juice.shop/companion-guide/latest/appendix/solutions.html#_overwrite_the_legal_information_file).
+It includes CWE-22 aka Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal') [^14].
+Vulnerability is better known as [Zip Slip](https://security.snyk.io/research/zip-slip-vulnerability).
+
+
+Your task is to replace this subtitle file so that when the user accessess the promotional page, it loads the script content and does the following: 
+
+1. Use JavaScript to read the cookies of the currently authenticated user
+2. Get the authentication token (JWT) from that cookie
+3. Parse the JWT token with plain JavaScript to get the current user email *and* hashed password
+4. Replace the promotional element new element with the header title "This is Mallory's web page", and show the current user information (email + hashed password)
+5. Also, show the profile picture related to that cookie's user.
+
+
+> [!Tip]
+> Use Juice Shop's challenges as help on making this task.
+> Check [here](https://pwning.owasp-juice.shop/companion-guide/latest/appendix/solutions.html#_embed_an_xss_payload_into_our_promo_video) about XSS and video.
+> Additionally, check [here](https://pwning.owasp-juice.shop/companion-guide/latest/appendix/solutions.html#_overwrite_the_legal_information_file) for file upload vulneralibity.
+
+
+> [!Tip]
+> Go to your's browser's developer tools, and try your script there in console before actually using it as XSS.
+
+
+> As a mark of completing this task, return all the source code you needed for doing the above, and `zip` file, which uses the path travelsar vulneralibity. Describe shortly what you needed to do. Also, *take a screenshot* from the fresh new promotion page, which shows the credentials of the currently logged user and profile picture.
+
+
+
+[^1]: [Software bug](https://en.wikipedia.org/wiki/Software_bug)
+[^2]: [Common Weakness Enumeration (CWE)](https://cwe.mitre.org)
+[^3]: [2022 CWE Top 25 Most Dangerous Software Weaknesses](https://cwe.mitre.org/top25/archive/2022/2022_cwe_top25.html)
+[^4]: [2023 CWE Top 25 Most Dangerous Software Weaknesses](https://cwe.mitre.org/top25/archive/2023/2023_top25_list.html)
 [^5]: [2023 CWE Top 10 KEV Weaknesses List Insights](https://cwe.mitre.org/top25/archive/2023/2023_kev_insights.html#)
 [^6]: [Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
 [^7]: [Email Address Regular Expression That 99.99% Works.  Disagree?](https://emailregex.com)
 [^8]: [Cross Site Scripting](https://owasp.org/www-community/attacks/xss/)
 [^9]: [CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](https://cwe.mitre.org/data/definitions/78.html)
 [^10]: [CWE-787: Out-of-bounds Write](https://cwe.mitre.org/data/definitions/787.html)
-
+[^11]: [CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')](https://cwe.mitre.org/data/definitions/89.html)
+[^12] [SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection)
+[^13]: [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)
+[^14]: [CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')](https://cwe.mitre.org/data/definitions/22.html)
