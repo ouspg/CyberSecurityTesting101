@@ -236,6 +236,8 @@ How can you get a list of all products, including the deleted ones?
 
 # Task 3: Advanced Cross-site Scripting (XSS) 
 
+> Return this task to GitHub
+
 Cross-site Scripting (XSS) is yet another input-related problem, usually related to the lack of input sanitisation.
 Take a look at some of its definitions [^8] [^13]. 
 
@@ -277,23 +279,23 @@ It includes CWE-22 aka Improper Limitation of a Pathname to a Restricted Directo
 Vulnerability is better known as [Zip Slip](https://security.snyk.io/research/zip-slip-vulnerability).
 
 
-Your task is to replace this subtitle file so that when the user accessess the promotional page, it loads the script content and does the following: 
+Your task is to replace this subtitle file so that when the user accesses the promotional page, it loads the script content, runs it and modifies the webpage as follows:
 
 1. Use JavaScript to read the cookies of the currently authenticated user
 2. Get the authentication token (JWT) from that cookie
 3. Parse the JWT token with plain JavaScript to get the current user email *and* hashed password
-4. Replace the promotional element new element with the header title "This is Mallory's web page", and show the current user information (email + hashed password)
+4. Replace the promotional element with a new element with the header title "This is Mallory's web page", and show the current user information (email + hashed password)
 5. Also, show the profile picture related to that cookie's user.
 
 
 > [!Tip]
-> Use Juice Shop's challenges as help on making this task.
+> Use Juice Shop's challenge solutions as help on making this task.
 > Check [here](https://pwning.owasp-juice.shop/companion-guide/latest/appendix/solutions.html#_embed_an_xss_payload_into_our_promo_video) about XSS and video.
 > Additionally, check [here](https://pwning.owasp-juice.shop/companion-guide/latest/appendix/solutions.html#_overwrite_the_legal_information_file) for file upload vulneralibity.
 
 
 > [!Tip]
-> Go to your's browser's developer tools, and try your script there in console before actually using it as XSS.
+> Go to your's browser's developer tools, and try your script (or it's parts) there in console before actually using it as XSS. E.g. just run `document.cookie` to print cookie data.
 
 
 > As a mark of completing this task, return all the source code you needed for doing the above, and `zip` file, which uses the path travelsar vulneralibity. Describe shortly what you needed to do. Also, *take a screenshot* from the fresh new promotion page, which shows the credentials of the currently logged user and profile picture.
@@ -311,6 +313,6 @@ Your task is to replace this subtitle file so that when the user accessess the p
 [^9]: [CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](https://cwe.mitre.org/data/definitions/78.html)
 [^10]: [CWE-787: Out-of-bounds Write](https://cwe.mitre.org/data/definitions/787.html)
 [^11]: [CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')](https://cwe.mitre.org/data/definitions/89.html)
-[^12] [SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection)
+[^12]: [SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection)
 [^13]: [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)
 [^14]: [CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')](https://cwe.mitre.org/data/definitions/22.html)
