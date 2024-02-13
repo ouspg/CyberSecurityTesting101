@@ -156,11 +156,6 @@ graph LR
     client[Client] -- "1. Sends request" --> server[Server]
     server -- "2. Validates request &\nresponds" --> client
     mallory[Mallory] -- "3. Attempts direct\naccess to Server" --> server
-
-    class client,server default;
-    class mallory attacker;
-    class security security;
-
 ```
 
 For this exercise, we explore some of those scenarios, by going to test one quite vulnerable web application, [OWASP's Juice Shop](https://github.com/juice-shop/juice-shop). 
@@ -177,11 +172,6 @@ graph LR
     burp -- "4. Forwards response" --> client
     mallory[Mallory] -- "6. Attempts to intercept\nvia Burp Suite" --> burp
     mallory -- "6. Attempts to intercept\nvia Burp Suite" --> client 
-
-    class client,server default;
-    class mallory attacker;
-    class burp intercept;
-
 ```
 
 You can also do most of the things just by using browser's developer tools or, for example, [Zed Attack Proxy (ZAP)](https://www.zaproxy.org).
