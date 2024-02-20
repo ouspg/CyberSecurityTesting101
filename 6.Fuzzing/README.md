@@ -129,6 +129,36 @@ yay -Sy aflplusplus
 ```
 
 To detect problems, which might not typically lead to fatal crash of the program, we can use sanitizers, which can find memory corruption vulnerabilities like use-after-free, NULL pointer dereference and buffer overruns.
+For this task we will test [AddressSanitizer](https://github.com/google/sanitizers/wiki/AddressSanitizer). It also can tell what is the problem in the code.
+
+To enable Address Sanitizer with `afl++` instrumentation, compile the same `sample.c` binary as
+
+```sh
+AFL_USE_ASAN=1 afl-cc -o sample sample.c
+```
+
+And then start fuzzing! Find the information how to start the fuzzer.
+It should find thousands of crashes pretty fast.
+The provided sample program is not complex, so the instrumentation is not very useful here, but we just get introduction for it.
+
+After you have fuzz tested a while, take a look for your *output* directory, which stores the metadata and the files which have caused a crash.
+Reproduce the crash by running one of them as parameter for the sample program e.g. 
+
+```sh
+./sample outputs/crashes/id:000000,sig:11,src:000006,op:havoc,rep:64
+```
+
+You should also see AddressSanitizer output.
+
+> **As completion of this task, do the following and answer to the questions:**
+
+- Take a screenshot of AFL++ report screen of your own execution with crashes
+- Give all the required commands for completing this task.
+- Copy-paste the AddressSanitizer output. Does it identify the line of code in the program, which causes the problem? What other information it tells?
+- How many crashes did the fuzzer find? How many of them were unique?
+- How many cycles did the program do? What does “cycles” mean?
+- When you should stop the fuzzer? Explain.
+- What fuzzing strategy is being used at the time of the screenshot?
 
 
 ## Task 3: Web fuzzing with [`ffuf`](https://github.com/ffuf/ffuf)
