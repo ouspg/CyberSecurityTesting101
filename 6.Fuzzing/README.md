@@ -106,7 +106,7 @@ There are two ways to actively fuzz test the program:
 
 To complete and get this task automatically graded, you need to use the *file-based method.*
 
-> Given the input and the seed, what is the *first* file to crash the program?
+> Based on the given the input and the seed, what is the *first* file to crash the program? Make sure to linearly iterate the numbers from 1 to upwards. You should return integer as an answer.
 
 ## Task 2: Fuzzing with AFL++
 
