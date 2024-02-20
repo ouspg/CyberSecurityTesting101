@@ -26,8 +26,8 @@ You are not required to do tasks in order, but it is recommended.
 | Task # | Points | Description |
 | ---- | :--: | ---- |
 | Task 1 | 2 | Getting started with fuzzing (Moodle Exam)  |
-| Task 2 | 2 |  |
-| Task 3 | 1 | Web fuzzing with `ffuf` (GitHub) |
+| Task 2 | 1 | Fuzzing with AFL++ (GitHub) |
+| Task 3 | 2 | Web fuzzing with `ffuf` (GitHub) |
 
 # Task 1: Getting started with fuzzing
 
@@ -65,7 +65,7 @@ Radamsa uses the provided string above as the base input value, which is then fu
 
 Radamsa and most other fuzzers are pseudorandom; meaning that they provide outputs deterministically.
 This is important for reproducing the possible test cases and relevant errors.
-Radamsa takes seed from `/dev/urandom` by default, but you can also set seed manually with `-s` parameter.
+Radamsa takes seed from `/dev/urandom` by default, but you can also set seed manually with `-s` or `--seed` parameter.
 The seed works as a starting point for the fuzzer's random value generator, and based on that, further values are generated. 
 
 Typically, you don't need to set the seed value, but instead when fuzzing, you might want to capture the metadata with `-M` flag, and then reproduce the possible output data, if you want to reproduce some testing out.
@@ -80,7 +80,7 @@ With `radamsa`, you can generate multiple samples at once, where directly into f
 
 Find out how can you do that.
 
-> In the exam, you are given an initial input string, seed, and number of files to generate. Return the `SHA256` sum of the asked `nth` file contents. 
+> In the exam, you are given an initial input string and seed. Return the `SHA256` sum of the asked `nth` file contents. 
 
 ### Task 1C) Testing actual program (1.0p)
 
@@ -101,22 +101,35 @@ echo -n "Voilà" | radamsa | ./sample
 
 There are two ways to actively fuzz test the program:
 
-1. Loop in bash or in some other programming language to repeatedly call `radamsa` and pipe the output for the sample program. Check `radamsa` documentation, how to create loop and check error exit codes.
+1. Loop in bash or in some other programming language to repeatedly call `radamsa` and pipe the output for the sample program. Check `radamsa` documentation, how to create a loop and check error exit codes.
 2. Or generate multiple files at once, and try to run the program for each of them, using programming again.
 
 To complete and get this task automatically graded, you need to use the *file-based method.*
 
 > Given the input and the seed, what is the *first* file to crash the program?
 
-## Task 2: Fuzzing with and AFL
+## Task 2: Fuzzing with AFL++
 
 > Return this task to GitHub
 
 Radamsa has great mutation capabilities, but it is not [coverage guided](https://www.fuzzingbook.org/html/Coverage.html) — which means that it is sometimes harder to automatically discover deeper paths in the software.
 
-Software might use many protocols in many layers, and if you want to also test the most internal layers, your input data needs to be valid for the outer layers before it gets to inner layers.
+Software might use many protocols in many layers, and if you also want to test the most internal layers, your input data needs to be valid for the outer layers before it gets to inner layers.
 
-Coverage guiding is achieved by instrumenting the compiled binary — during fuzzing the fuzzer detects these instruments and knows where it is in the program, and based on that, it can adapt the input generation.
+Coverage guiding is achieved by instrumenting the compiled binary — during fuzzing the fuzzer detects these instruments and knows where it is in the program, and based on that, it can adapt the input generation to discover new code paths.
+This is also known as feedback-based or feedback-driven fuzzing.
+
+One well known fuzzer like this is [afl++](https://aflplus.plus/), based on the no-longer-maintained [afl](https://github.com/google/AFL).
+Check the [docs](https://aflplus.plus/docs/) for more, especially part [fuzzing in depth](https://aflplus.plus/docs/fuzzing_in_depth/).
+
+To install `afl++` from community repository in Arch Linux, run:
+
+```sh
+yay -Sy aflplusplus
+```
+
+To detect problems, which might not typically lead to fatal crash of the program, we can use sanitizers, which can find memory corruption vulnerabilities like use-after-free, NULL pointer dereference and buffer overruns.
+
 
 ## Task 3: Web fuzzing with [`ffuf`](https://github.com/ffuf/ffuf)
 

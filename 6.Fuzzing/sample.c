@@ -13,13 +13,13 @@ int main(int argc, char *argv[]) {
             perror("Error opening file");
             return 1;
         }
-        fscanf(file, "%s", buffer); // Read from file into buffer, still potentially unsafe due to not using length checks
+        fscanf(file, "%s", buffer); // Read one string from file into buffer, still potentially unsafe due to not using length checks
         fclose(file); // Close the file
         printf("File content: %s\n", buffer);
     } else {
         // No command-line argument, read from stdin using scanf() in an insecure way
         printf("Enter your message: ");
-        scanf("%s", buffer); // Full input copied to limited-size buffer, vulnerable  
+        scanf("%s", buffer); // Single string copied to limited-size buffer, vulnerable  
         printf("You entered: %s\n", buffer);
     }
 
