@@ -238,15 +238,22 @@ How can you get a list of all products, including the deleted ones?
 
 > Return this task to GitHub
 
+> [!Important]
+> We continue with the Juice Shop on this task.
+> Restart Docker container here with an extra paramater `-e NODE_ENV=unsafe` to allow arbitrary file write!
+
+```sh
+docker run --rm -p 3000:3000 -e NODE_ENV=unsafe bkimminich/juice-shop
+```
+
 Cross-site Scripting (XSS) is yet another input-related problem, usually related to the lack of input sanitisation.
 Take a look at some of its definitions [^8] [^13]. 
 
 In practice, untrusted input data is reflected or directed to the browser in its original format.
 If the context is the browser's rendering context, the browser might render the HTML from the input as it is supposed to, or even run JavaScript.
 
-> We continue with the Juice Shop on this task.
 
-As a simple demonstration, you can just put the following input to the Juice Shop's search field:
+As a simple demonstration, then you can just put the following input to the Juice Shop's search field:
 
 ```html
 <iframe src="javascript:alert(`xss`)">
