@@ -74,7 +74,7 @@ For reviewing purposes, we also use seed here.
 
 > In the exam, you get initial input string and seed.  Return `SHA256` sum of the output as result. Output is always the same because of the given seed.
 
-#### Task 1B) A bit more samples with Radamsa (0.5p)
+### Task 1B) A bit more samples with Radamsa (0.5p)
 
 With `radamsa`, you can generate multiple samples at once, where directly into files is recommended. 
 
@@ -116,7 +116,7 @@ Radamsa has great mutation capabilities, but it is not [coverage guided](https:/
 
 Software might use many protocols in many layers, and if you also want to test the most internal layers, your input data needs to be valid for the outer layers before it gets to inner layers.
 
-Coverage guiding is achieved by instrumenting the compiled binary — during fuzzing the fuzzer detects these instruments and knows where it is in the program, and based on that, it can adapt the input generation to discover new code paths.
+Coverage guiding is achieved by instrumenting the compiled binary — during fuzzing the fuzzer detects these instruments and knows which paths of the program has been processed, and based on that, it can adapt the input generation to discover new code paths.
 This is also known as feedback-based or feedback-driven fuzzing.
 
 One well known fuzzer like this is [afl++](https://aflplus.plus/), based on the no-longer-maintained [afl](https://github.com/google/AFL).
