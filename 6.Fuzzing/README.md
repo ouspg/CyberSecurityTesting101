@@ -1,12 +1,12 @@
 
 # 6. Fuzzing
 
-In the previous week, we handled input sanitation and validation, and especially the context-specific injections.
+In the previous week, we handled input sanitation and validation, especially the context-specific injections.
 
 We didn't handle the more dangerous and complex memory-related problems, which are typically also the result of specific, unhandled input.
 Historically, the most dangerous type of these has been [buffer overflows](https://en.wikipedia.org/wiki/Buffer_overflow).
 
-Sometimes, the program does not handle the data properly on the lower level, and it causes data to be written to the invalid parts of the memory, or even accessing it incorrectly.
+Sometimes, the program does not handle the data properly on the lower level, and it causes data to be written to invalid parts of the memory, or even accessing it incorrectly.
 This has been an issue, especially in [C and C++ languages](https://www.cisa.gov/news-events/news/urgent-need-memory-safety-software-products).
 
 The exploiting and internal explanation of these bugs are handled in Cyber III: Software and Hardware Security course.
@@ -15,7 +15,7 @@ On this week, we briefly introduce some testing methodologies to detect these.
 
 These methodologies **can also detect other input-related issues, like injections**.
 
-For additional material, check [fuzzing book](https://www.fuzzingbook.org/).
+For additional material, check the [fuzzing book](https://www.fuzzingbook.org/).
 ## Grading
 
 You can obtain up to five points from this exercise.
@@ -35,7 +35,7 @@ You are not required to do tasks in order, but it is recommended.
 
 Read the introduction material about fuzzing [here.](https://github.com/ouspg/fuzz-testing-beginners-guide)
 
-In this exercise, will be using [radamsa](https://gitlab.com/akihe/radamsa), which is a test case generator for general purpose robustness testing.
+In this exercise, will be using [radamsa](https://gitlab.com/akihe/radamsa), which is a test case generator for general-purpose robustness testing.
 
 You first need to install `radamsa` and its dependencies, in case they are not installed already.
 
@@ -47,7 +47,7 @@ pacman -Sy radamsa
 
 You can find instructions on manual installation in Radamsa's GitLab page.
 
-You can also use as Radamsa as library, e.g. with [Python wrapper](https://github.com/tsundokul/pyradamsa). There is native support for C and Schema, and also native [port in Rust](https://github.com/microsoft/rusty-radamsa).
+You can also use Radamsa as a library, e.g. with a [Python wrapper](https://github.com/tsundokul/pyradamsa). There is native support for C and Schema, and also a native [port in Rust](https://github.com/microsoft/rusty-radamsa).
 
 
 ### Task 1A) Basic use of Radamsa (0.5p)
@@ -58,14 +58,14 @@ Generating inputs with Radamsa can be done with, for example:
 echo -n "Fuzztron 2000" | radamsa
 ```
 
-where initial input is “Fuzztron 2000”.
+where the initial input is “Fuzztron 2000”.
 Play around a bit — you can see how the output changes each time.
 
 Radamsa uses the provided string above as the base input value, which is then further [mutated](https://www.fuzzingbook.org/html/MutationFuzzer.html). 
 
 Radamsa and most other fuzzers are pseudorandom; meaning that they provide outputs deterministically.
 This is important for reproducing the possible test cases and relevant errors.
-Radamsa takes seed from `/dev/urandom` by default, but you can also set seed manually with `-s` or `--seed` parameter.
+Radamsa takes a seed from `/dev/urandom` by default, but you can also set the seed manually with `-s` or `--seed` parameter.
 The seed works as a starting point for the fuzzer's random value generator, and based on that, further values are generated. 
 
 Typically, you don't need to set the seed value, but instead when fuzzing, you might want to capture the metadata with `-M` flag, and then reproduce the possible output data, if you want to reproduce some testing out.
@@ -73,6 +73,9 @@ For reviewing purposes, we also use seed here.
 
 
 > In the exam, you get initial input string and seed.  Return `SHA256` sum of the output as result. Output is always the same because of the given seed.
+
+> [!Tip]
+> Make sure to not add anything extra for the fuzzer input (like newline characters.) You can pipe output directly `sha256sum`, for example, to get the hash. Data might contain non-visible characters!
 
 ### Task 1B) A bit more samples with Radamsa (0.5p)
 
@@ -85,7 +88,7 @@ Find out how can you do that.
 ### Task 1C) Testing actual program (1.0p)
 
 You will find a vulnerable program [`sample.c`](sample.c), which takes input both as file argument and from `stdin`.
-Check the source for identifying the vulnerabilities.
+Check the source to identify the vulnerabilities.
 
 You can compile it as
 
@@ -112,24 +115,24 @@ To complete and get this task automatically graded, you need to use the *file-ba
 
 > Return this task to GitHub
 
-Radamsa has great mutation capabilities, but it is not [coverage guided](https://www.fuzzingbook.org/html/Coverage.html) — which means that it is sometimes harder to automatically discover deeper paths in the software.
+Radamsa has great mutation capabilities, but it is not [coverage-guided](https://www.fuzzingbook.org/html/Coverage.html) — which means that it is sometimes harder to automatically discover deeper paths in the software.
 
-Software might use many protocols in many layers, and if you also want to test the most internal layers, your input data needs to be valid for the outer layers before it gets to inner layers.
+The software might use many protocols in many layers, and if you also want to test the most internal layers, your input data needs to be valid for the outer layers before it gets to the inner layers.
 
-Coverage guiding is achieved by instrumenting the compiled binary — during fuzzing the fuzzer detects these instruments and knows which paths of the program has been processed, and based on that, it can adapt the input generation to discover new code paths.
+Coverage guiding is achieved by instrumenting the compiled binary — during fuzzing the fuzzer detects these instruments and knows which paths of the program have been processed, and based on that, it can adapt the input generation to discover new code paths.
 This is also known as feedback-based or feedback-driven fuzzing.
 
-One well known fuzzer like this is [afl++](https://aflplus.plus/), based on the no-longer-maintained [afl](https://github.com/google/AFL).
+One well-known fuzzer like this is [afl++](https://aflplus.plus/), based on the no-longer-maintained [afl](https://github.com/google/AFL).
 Check the [docs](https://aflplus.plus/docs/) for more, especially part [fuzzing in depth](https://aflplus.plus/docs/fuzzing_in_depth/).
 
-To install `afl++` from community repository in Arch Linux, run:
+To install `afl++` from the community repository in Arch Linux, run:
 
 ```sh
 yay -Sy aflplusplus
 ```
 
-To detect problems, which might not typically lead to fatal crash of the program, we can use sanitizers, which can find memory corruption vulnerabilities like use-after-free, NULL pointer dereference and buffer overruns.
-For this task we will test [AddressSanitizer](https://github.com/google/sanitizers/wiki/AddressSanitizer). It also can tell what is the problem in the code.
+To detect problems, that might not typically lead to fatal crashes of the program, we can use sanitizers, which can find memory corruption vulnerabilities like use-after-free, NULL pointer dereference and buffer overruns.
+For this task, we will test [AddressSanitizer](https://github.com/google/sanitizers/wiki/AddressSanitizer). It also can tell what is the problem in the code.
 
 To enable Address Sanitizer with `afl++` instrumentation, compile the same `sample.c` binary as
 
@@ -137,12 +140,12 @@ To enable Address Sanitizer with `afl++` instrumentation, compile the same `samp
 AFL_USE_ASAN=1 afl-cc -o sample sample.c
 ```
 
-And then start fuzzing! Find the information how to start the fuzzer.
+And then start fuzzing! Find the information on how to start the fuzzer.
 It should find thousands of crashes pretty fast.
-The provided sample program is not complex, so the instrumentation is not very useful here, but we just get introduction for it.
+The provided sample program is not complex, so the instrumentation is not very useful here, but we just get an introduction for it.
 
-After you have fuzz tested a while, take a look for your *output* directory, which stores the metadata and the files which have caused a crash.
-Reproduce the crash by running one of them as parameter for the sample program e.g. 
+After you have fuzz tested a while, take a look at your *output* directory, which stores the metadata and the files that caused a crash.
+Reproduce the crash by running one of them as the parameter for the sample program e.g. 
 
 ```sh
 ./sample outputs/crashes/id:000000,sig:11,src:000006,op:havoc,rep:64
@@ -154,7 +157,7 @@ You should also see AddressSanitizer output.
 
 - Take a screenshot of AFL++ report screen of your own execution with crashes
 - Give all the required commands for completing this task.
-- Copy-paste the AddressSanitizer output. Does it identify the line of code in the program, which causes the problem? What other information it tells?
+- Copy-paste the AddressSanitizer output. Does it identify the line of code in the program, which causes the problem? What other information does it tell?
 - How many crashes did the fuzzer find? How many of them were unique?
 - How many cycles did the program do? What does “cycles” mean?
 - When you should stop the fuzzer? Explain.
@@ -171,7 +174,7 @@ Fuzzing can be done to every interface, and `ffuf` is especially focused on the 
 You can use fuzzing to enumerate possible subdomains or routes on the website, brute force passwords, check API response codes and so on.
 Read `ffuf`'s [wiki](https://github.com/ffuf/ffuf/wiki) for more.
 
-You can choose one task to use `ffuf` to fuzz test OWASP's Juice Shop.  Check previous week to get started with Juice Shop.
+You can choose one task to use `ffuf` to fuzz test OWASP's Juice Shop.  Check the previous week to get started with Juice Shop.
 
 
 Available possibilities:
