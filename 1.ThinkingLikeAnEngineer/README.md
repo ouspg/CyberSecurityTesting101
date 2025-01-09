@@ -484,13 +484,14 @@ solve the maze by finding the end coordinate by travelling the correct path.
 Solving the maze by hand is too laborious, and we practice some automation. You
 can use any programming language that you want.
 
-The maze will be similated trought command-line application [mazy] (ADDED SOON)
-that is compiled and bundled into this repository. It requires `x86_64` Linux to
-work. Also `ARM64` version for macOS can be provided if that is needed.
+The maze will be similated throught command-line application [mazy](bin/mazy)
+that is compiled and bundled into this repository. It requires `x86_64` Linux
+with minimum version `GLIBC_2.2.5` to work. You likely meet this requirement.
+Also `ARM64` version for macOS can be provided if that is needed.
 
-The maze is simulated through 2D grid which has 20x20 cells. Every maze is
-randomly generated, based on the current _seed_. Here is a sample maze with seed
-value **12345**, which shows the correct path in grid. The task here is to
+The maze can be thought as 2D grid which has 20x20 cells. Every maze is randomly
+generated, based on the current _seed_. Here is a sample maze with seed value
+**12345**, which shows the correct path in the grid. The task here is to
 identify the similar path for different seeds, based on some rules.
 
 ```text
@@ -572,7 +573,7 @@ There are three different operators that can appear in cell:
 
 When you think that you are in the end - attempt your solution with `--solve`
 command-line flag. Your solution should be in JSON format and command-line
-application reads it from `STDIN`. See below for format.
+application reads it from `STDIN`. See below for the format.
 
 There are two twists:
 
@@ -591,7 +592,7 @@ There are two twists:
 You can practice your approach with the default seed, and once it works, try the
 exam.
 
-### About seed
+### About the seed
 
 To pass a custom seed (default is `12345`), either use `--seed` flag or pass
 environment variable, like `SEED=12345 ./mazy`.
