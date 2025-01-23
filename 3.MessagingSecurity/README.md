@@ -209,9 +209,9 @@ C_2 = M \times S \mod p \\
 \\
 \text{Where:} \\
 & S \text{ is shared secret.} \\
-& k \text{ is ephemeral key (Bob's hidden secret).} \\
-& A \text{ is Alice's public key.} \\
-& C_1 \text{ is the sender's ephemeral (aka Bob's) public key.} \\
+& k \text{ is ephemeral key (Bob's changing hidden secret).} \\
+& A \text{ is Alice's long-term public key.} \\
+& C_1 \text{ is the sender's ephemeral (aka Bob's) short-term public key.} \\
 & M \text{ is the message as an integer.} \\
 & C_2 \text{ is the ciphertext.}
 \end{align*}
@@ -225,7 +225,7 @@ $$
 \text{To decrypt:} \\
  S &= C_1^a \mod p \\
  M &= C_2 \times S^{-1} \mod p \\\\
-&\text{Where }a \text{ is Alice's hidden secret and } S^{-1} \text{ is the modular multiplicative inverse of } S \text{ modulo } p.
+&\text{Where }a \text{ is Alice's long-term private key and } S^{-1} \text{ is the modular multiplicative inverse of } S \text{ modulo } p.
 \end{align*}
 $$
 
