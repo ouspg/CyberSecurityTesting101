@@ -66,6 +66,10 @@ To prevent this, input sanitisation would involve stripping out or encoding pote
 
 Input sanitisation can also fail, for example, if you do not process every dangerous character, or if there is a way to undo or bypass this process.
 
+## Input neutralisation
+
+Neutralisation is an abstract term for any technique that ensures that input (and output) conforms with expectations and is "safe." [^15]
+
 ## Identifying input-related threats
 
 Whenever the program receives data as input through some interface, *there is always a risk for a vulnerability.*
@@ -153,9 +157,11 @@ What if someone decides *to not use the official clients, while nobody thinks it
 
 ```mermaid
 graph LR
-    client[Client] -- "1. Sends request" --> server[Server]
-    server -- "2. Validates request &\nresponds" --> client
-    mallory[Mallory] -- "3. Attempts direct\naccess to Server" --> server
+    client[Client] -- "Sends request" --> server[Server]
+    server -- "Validates request and
+    responds" --> client
+    mallory[Mallory] -- "Attempts direct
+    access to the server" --> server
 ```
 
 For this exercise, we explore some of those scenarios, by going to test one quite vulnerable web application, [OWASP's Juice Shop](https://github.com/juice-shop/juice-shop). 
@@ -166,12 +172,12 @@ We mainly use it as an intercepting proxy that sits between the browser and the
 
 ```mermaid
 graph LR
-    client["Client (via Burp Browser)"] -- "1. Sends request" --> burp[Burp Suite]
-    burp -- "2. Intercepts &\nmodifies request (optional)" --> server[Server]
-    server -- "3. Validates request &\nresponds" --> burp
-    burp -- "4. Forwards response" --> client
-    mallory[Mallory] -- "6. Attempts to intercept\nvia Burp Suite" --> burp
-    mallory -- "6. Attempts to intercept\nvia Burp Suite" --> client 
+    client["Client (via Burp Browser)"] -- "Sends request" --> burp[Burp Suite]
+    burp -- "Intercepts & modifies request (optional)" --> server[Server]
+    server -- "Validates request & responds" --> burp
+    burp -- "Forwards response" --> client
+    mallory[Mallory] -- "Attempts to intercept via Burp Suite" --> burp
+    mallory -- "Attempts to intercept via Burp Suite" --> client 
 ```
 
 You can also do most of the things just by using browser's developer tools or, for example, [Zed Attack Proxy (ZAP)](https://www.zaproxy.org).
@@ -323,3 +329,4 @@ Your task is to replace this subtitle file so that when the user accesses the pr
 [^12]: [SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection)
 [^13]: [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)
 [^14]: [CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')](https://cwe.mitre.org/data/definitions/22.html)
+[^15]: [CWE-707: Improper Neutralization](https://cwe.mitre.org/data/definitions/707.html)
