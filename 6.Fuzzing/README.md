@@ -125,10 +125,10 @@ This is also known as feedback-based or feedback-driven fuzzing.
 One well-known fuzzer like this is [afl++](https://aflplus.plus/), based on the no-longer-maintained [afl](https://github.com/google/AFL).
 Check the [docs](https://aflplus.plus/docs/) for more, especially part [fuzzing in depth](https://aflplus.plus/docs/fuzzing_in_depth/).
 
-To install `afl++` from the community repository in Arch Linux, run:
+To install `afl++` from the official repository in Arch Linux, run:
 
 ```sh
-yay -Sy aflplusplus
+pacman -Sy afl++
 ```
 
 To detect problems, that might not typically lead to fatal crashes of the program, we can use sanitizers, which can find memory corruption vulnerabilities like use-after-free, NULL pointer dereference and buffer overruns.
