@@ -116,7 +116,7 @@ tasks in order.
 | ------ | :----: | -------------------------------------------------- |
 | Task 1 |   3    | Getting started with Linux (Return as Moodle exam) |
 | Task 2 |   1    | Maze and operations (Moodle exam)                  |
-| Task 3 |   1    | Essay from the provided topics (Return to GitHub)  |
+| Task 3 |   1    | Essay from the provided topics (Moodle peer review box)  |
 
 Each part in task 1 is worth 1 point.
 
@@ -663,14 +663,17 @@ if result.returncode == 0:
         print(f"Invalid JSON response: {result.stdout}")
 ```
 
-# Task 3 - Essay writing
+# Task 3 - Essay writing and peer review
 
 You have an option to select one from the following topics and write an essay.
 
 - Security analysis and tool usability
 - "Hacker mindset" and threat modeling
 
-> Please, return the essay into your private GitHub repository.
+> **In both topics, your task is to write single A4 page long (~400 words) essay considering the requirement mentioned later on. Reflect your own thinking.**
+
+> Please, return the essay into Moodle workshop. There will be a peer review phase after the deadline. You can obtain points only if you do the peer-review for three different submissions. 
+Peer review may include either of the topics.
 
 ## Option 1: Security analysis and tool usability
 
@@ -715,8 +718,6 @@ These distributions mainly exist, so that with a pre-configured environment,
 with some usability, you get access to a large set of tools at once, which are
 functional at some level.
 
-> **Your task is to write 1-2 A4 pages long (400-800 words) essay considering
-> the following**.
 
 - What other ways there are to obtain information security tools?
   - How can I install them individually into my own computer? Could there be
@@ -745,13 +746,19 @@ Some new LLM-based services, as example where the entry level is free with
 usable level:
 
 - [OpenAI's ChatGPT](https://chat.openai.com/)
-- [Microsoft's Copilot (previously known as Bing Chat)](https://copilot.microsoft.com/)
-- [Google's Bard](https://bard.google.com)
-- [phind.com](phind.com)
+- [Anthropic's Claude](https://claude.ai)
+- [Microsoft's Copilot](https://copilot.microsoft.com/)
+- [Google's Gemini](https://gemini.google.com)
+- [Google's Gemini in AI Studio](https://aistudio.google.com)
+- [Open-source models in Hugging Face](https://huggingface.co/chat/)
+- [phind.com](https://phind.com)
 - [perplexity.ai](https://www.perplexity.ai/)
+- And many others
 
 **You don't need to install or test the tools yourself or download the Linux
 distributions in this task**. Explore based on the available information.
+
+> Use the guidance above when writing the essay. Show that you have attempted a comparison, and explain whether certain approaches are more helpful than others for boosting productivity and the *accurate*, long-term use of different tools.
 
 ## Option 2: "Hacker mindset" and threat modeling
 
@@ -766,7 +773,7 @@ their encountered challenges, and how the resulting information could be used to
 improve security testing tools and automation processes.
 
 > **Combine the information from the paper with the introduction of this
-> exercise, and write an essay of one or two A4 pages (around 400-800 words)
+> exercise, and write an essay of single A4 page (around 400 words)
 > _about the importance of thinking models and technical expertice in cyber
 > security testing_. Argumenting counts more than the word count.**
 
@@ -783,7 +790,7 @@ improve security testing tools and automation processes.
   software development process, and what it takes more from the "hackers" to
   find new ones?
 
-- Respectively, why automation might not find new vulnerabilities efficiently?
+- Respectively, why automation might not find new vulnerabilities efficiently? How LLMs/AI could change the landscape - are they still finding just existing vulnerabilities?
 
 - Based on the paper, how much role does domain-specific expertise have for
   efficient cyber-specific testing?
