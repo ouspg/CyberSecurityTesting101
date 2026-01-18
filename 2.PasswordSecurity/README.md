@@ -12,15 +12,16 @@ physical keypad.
 
 You can obtain up to six points from this exercise if you do the bonus task.
 
-You are not required to do tasks in order, but especially the first one is
+**You are not required** to do tasks in order, but especially the first one is
 important.
 
 | Task # | Points | Description                                        |
 | ------ | :----: | -------------------------------------------------- |
 | Task 1 |   1    | The concept of information entropy (Moodle exam)   |
 | Task 2 |   2    | Practical brute forcing of passwords (Moodle exam) |
-| Task 3 |   2    | The lifetime of the password (essay)               |
-| Task 4 |   1    | Keypad (Bonus task)                                |
+| Task 3 |   1    | Side-channel attack (Moodle exam) |
+| Task 4 |   1    | The lifetime of the password (essay)               |
+| Task 5 |   1    | Keypad (Bonus task)                                |
 
 Later tasks will require more time investment when compared to the previous
 tasks to acquire the relative amount of points.
@@ -299,9 +300,13 @@ Note:`hashcat`
 `john` works for this task, but it might be a little slower than Python
 implementation, for example. Check also the `--fork` parameter.
 
-## Task 3: Lifetime of the passwords
+## Task 3: Side-channel attacks
 
-> Return this task to GitHub
+TBA
+
+## Task 4: Lifetime of the passwords
+
+> Return this task to Moodle. There is a peer-review box. You will get a grade after you have reviewed three other submissions.
 
 Explore the following graph about typical password lifetime.
 
@@ -351,7 +356,7 @@ uses passwords, until there is a need to change it because of the breach or some
 other information leak. It also notes some good practices on using the passwords
 on the systems.
 
-> Your task is to write an essay of two A4 pages (around 800 words) about the
+> Your task is to write an essay of one A4 page (around 400 words) about the
 > _best practises of using and managing passwords and implementing
 > password-based systems, considering the entire lifetime of the passwords._
 
@@ -389,6 +394,8 @@ You can also get ideas from the
 
 # Task 4: Keypad (bonus task)
 
+> You can return this task either to GitHub or as text submission to Moodle.
+
 You encounter this locked door with this keypad. You know that this lock model
 can be configured for 4, 5, 6, or 7-digit key codes. The lock does not give you
 any else information during the key code attempt than the success light or fail
@@ -412,3 +419,5 @@ Credits for the OUSPG alumni Jukka Pajukangas for originally making this task.
 [^12]: [John the Ripper](https://www.openwall.com/john/)
 
 [^13]: [Brute-force attack](https://en.wikipedia.org/wiki/Brute-force_attack)
+
+[^31]: [Side-channel attack](https://en.wikipedia.org/wiki/Side-channel_attack)
