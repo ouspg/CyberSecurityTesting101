@@ -19,7 +19,7 @@ important.
 | ------ | :----: | -------------------------------------------------- |
 | Task 1 |   1    | The concept of information entropy (Moodle exam)   |
 | Task 2 |   2    | Practical brute forcing of passwords (Moodle exam) |
-| Task 3 |   1    | Side-channel attack (Moodle exam) |
+| Task 3 |   1    | A side-channel attack (Moodle exam) |
 | Task 4 |   1    | The lifetime of the password (essay)               |
 | Task 5 |   1    | Keypad (Bonus task)                                |
 
@@ -300,9 +300,165 @@ Note:`hashcat`
 `john` works for this task, but it might be a little slower than Python
 implementation, for example. Check also the `--fork` parameter.
 
-## Task 3: Side-channel attacks
+## Task 3: A side-channel attack
 
-TBA
+> Return this task as a Moodle exam. It could be a bit more difficult one. Ask extra time if you want!
+
+> A side-channel attack is a type of security exploit that leverages information inadvertently leaked by a system—such as timing, power consumption, or electromagnetic or acoustic emissions—to gain unauthorized access to sensitive information. - Wikipedia [^31]
+What if the password is properly hashed, but the authentication and session management have not accounted for all the ways information can leak - and thus reduce the overall entropy of the system?
+
+We have a simple test web application where this vulnerability occurs. The application handles user login and password hashing somewhat properly, but session tokens are not well implemented. Even though session tokens could have enough entropy in theory, the side channel significantly reduces it in practice.
+
+The web application doesn't offer any other functionality but logging-in and then showing the flag based on the current user.
+
+<p align="center">
+  <img src="img/task3_portal.png" alt="Web front" width="300">
+</p>
+
+
+<p align="center">
+  <img src="img/task3_flag.png" alt="Web front" width="300">
+</p>
+
+You can access the application at https://cybertesting101.ouspg.org, or, preferably, start it locally first by running
+
+```bash
+docker run --rm -p 3000:3000 ghcr.io/ouspg/cybersecuritytesting101:week2task3
+```
+and navigating to http://localhost:3000. Test credentials are in both cases:
+
+- Username: `testuser`
+- Password: `TestPassword123`
+
+When you log-in, the backend server creates [a session token](https://en.wikipedia.org/wiki/Session_ID) and stores that into web browser. If you revisit the site, you are automatically logged in, until the session token is deleted either from the browser or server-side. 
+
+When the session token validity is checked on the backend server, it is incorrectly using a non-constant-time, character-by-character comparison. This leaks information about when a character in the token is correct.
+
+Here is the relevant Rust code you need; the full source is in the [app](app) directory, but reading it is not required:
+
+```rust
+// Can you see the issue?
+async fn string_compare(input: &str, expected: &str) -> bool {
+    if input.len() != expected.len() {
+        return false;
+    }
+    let input_bytes = input.as_bytes();
+    let expected_bytes = expected.as_bytes();
+    for i in 0..input_bytes.len() {
+        if input_bytes[i] != expected_bytes[i] {
+            return false;
+        }
+        // Add extra timing to make task easier
+        tokio::time::sleep(Duration::from_millis(10)).await;
+    }
+    true
+}
+```
+The code compares the byte-level representations of the strings, one byte at a time, and fails fast as soon as it encounters the first incorrect byte.
+
+The login form uses `/login` route, and you can see sample of logging in by using `curl`:
+
+```bash
+curl -X POST http://localhost:3000/login \
+  -d "username=testuser&password=TestPassword123" \
+  -c cookies.txt \
+  -v
+Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:3000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:3000...
+* connect to ::1 port 3000 from ::1 port 49284 failed: Connection refused
+*   Trying 127.0.0.1:3000...
+* Connected to localhost (127.0.0.1) port 3000
+> POST /login HTTP/1.1
+> Host: localhost:3000
+> User-Agent: curl/8.7.1
+> Accept: */*
+> Content-Length: 42
+> Content-Type: application/x-www-form-urlencoded
+>
+* upload completely sent off: 42 bytes
+< HTTP/1.1 200 OK
+< content-type: application/json
+* Added cookie session_token="testuser:5975d494bc8fa4a7" for domain localhost, path /, expire 1768696275
+< set-cookie: session_token=testuser:5975d494bc8fa4a7; Max-Age=3600; HttpOnly; SameSite=Lax; Path=/
+< content-length: 64
+< date: Sat, 17 Jan 2026 23:31:15 GMT
+<
+* Connection #0 to host localhost left intact
+{"success":true,"message":"Login successful! Welcome, testuser"}%
+```
+The previous command stores the session token in `cookies.txt` and returns a successful JSON response.
+
+By inspecting the file contents, you can reuse the token with `curl` to make a `GET` request with the session cookie:
+
+```bash
+curl http://localhost:3000/flag -b "session_token=testuser:5975d494bc8fa4a7"
+{"success":true,"flag":"flag{THIS_IS_A_TEST_FLAG}"}% 
+```
+
+As you can see, there is `testuser:` prefix in the session token. And suffix portion is hexadecimal string with 16 characters.
+
+ What if you happen to know other username which has existing session in place - and try to brute force the remaining characters (suffix) from the session token? Maybe measure time whether some character's response time is longer than others, as the Rust code is hinting? You can improve the accuracy by repeating and calculating the mean.
+
+> Return the task in the Moodle exam - you will get an username for remote address that serves the flag when you get the correct session token. Try your code locally at first. You can use any programming language you want.
+
+
+### Routes in web application
+
+- `/`  - returns the login form or flag based on authentication status. Supports `GET` method and includes the HTML.
+- `/login` - a route for username/password authentication. Returns session token in success. Supports `POST` method.
+- `/flag` -  gives the flag based on session token. Supports `GET` method. Responds always with JSON in the previously shown format.
+
+
+### Entropy changes (extra)
+
+<details>
+
+<summary>Check entropy changes</summary>
+
+Initial password requirements in this system:
+
+- **Character set:** `[a-zA-Z0-9]` (62 characters)
+- **Length:** 16 characters
+- **Constraints:** Must contain at least one lowercase, one uppercase, and one digit
+
+Combinations missing at least one character class (using inclusion-exclusion):
+$$\binom{3}{1}(36^{16}) - \binom{3}{2}(10^{16}) + \binom{3}{3}(0) = 3 \times 36^{16} - 3 \times 10^{16}$$
+
+Valid combinations:
+$$62^{16} - 3 \times 36^{16} + 3 \times 10^{16} \approx 4.76 \times 10^{28}$$
+
+**Password entropy:**
+$$\log_2(4.76 \times 10^{28}) \approx 95.2 \text{ bits}$$
+
+### Session Token (hex portion)
+
+**Character set:** `[0-9a-f]` (16 characters - hex)
+**Length:** 16 characters
+
+**NOTE:** Session token is short on purpose to make the task easier.
+
+#### Brute Force
+
+$$16^{16} = 2^{64} \approx 1.84 \times 10^{19}$$
+
+**Token entropy:** 64 bits
+
+#### Timing Side-Channel Attack
+
+With timing attack, each character is guessed independently:
+
+$$16 \times 16 = 256 \text{ attempts (worst case)}$$
+$$16 \times 8 = 128 \text{ attempts (average case)}$$
+
+**Effective entropy:** 
+$$\log_2(256) = 8 \text{ bits}$$
+
+The timing side-channel reduces the token security from **64 bits to 8 bits** — a reduction factor of **2⁵⁶ (72 quadrillion)**.
+
+</details>
 
 ## Task 4: Lifetime of the passwords
 
