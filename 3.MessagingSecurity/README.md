@@ -241,7 +241,7 @@ Overall, we can think that `ElGamal` encryption combines the aspects of both asy
 > On the Moodle exam, you will get all Diffie-Hellman parameters and ElGamal encrypted message. Parameter $p$ is 1024 bits, so **you will notice some big numbers**.  Decrypt the message by applying the above. You don't have to break anything here, just apply the equations to decrypt the message. We just want to understand the basic concept.
 
 > [!Tip]
->Covert the resulting integer to ASCII; reverse the process (in Python) `m_int = int.from_bytes(sentence.encode('utf-8'), "big")`, which was used to convert the original message into integer. Note that you must round up bits to next full byte to not lose any data, when considering how many bytes this integer takes to present. Original message is a phrase and ends to dot `.`.
+>Covert the resulting integer to ASCII; reverse the process (in Python) `m_int = int.from_bytes(sentence.encode('utf-8'), "big")`, which was used to convert the original message into integer. Note that you must round up bits to next full byte to not lose any data, when considering how many bytes this integer takes to present. Original message is a phrase and ends to dot `.` (`!` or `'` in some cases).
 
 The exam parameters are only for educational use, and $p$ is not safe prime. The security depends on the correct generation of the parameters. The original Diffie-Hellman is also vulnerable to [man-in-the-middle attack.](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) 
 
