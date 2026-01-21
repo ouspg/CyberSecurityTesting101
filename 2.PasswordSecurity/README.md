@@ -300,12 +300,13 @@ Note:`hashcat`
 `john` works for this task, but it might be a little slower than Python
 implementation, for example. Check also the `--fork` parameter.
 
-## Task 3: A side-channel attack
-
+# Task 3: A side-channel attack
+> [!NOTE]
 > Return this task as a Moodle exam. It could be a bit more difficult one. Ask extra time if you want!
 
 > A side-channel attack is a type of security exploit that leverages information inadvertently leaked by a system—such as timing, power consumption, or electromagnetic or acoustic emissions—to gain unauthorized access to sensitive information. - Wikipedia [^31]
-What if the password is properly hashed, but the authentication and session management have not accounted for all the ways information can leak - and thus reduce the overall entropy of the system?
+
+> What if the password is properly hashed, but the authentication and session management have not accounted for all the ways information can leak - and thus reduce the overall entropy of the system?
 
 We have a simple test web application where this vulnerability occurs. The application handles user login and password hashing somewhat properly, but session tokens are not well implemented. Even though session tokens could have enough entropy in theory, the side channel significantly reduces it in practice.
 
@@ -460,7 +461,7 @@ The timing side-channel reduces the token security from **64 bits to 8 bits** �
 
 </details>
 
-## Task 4: Lifetime of the passwords
+# Task 4: Lifetime of the passwords
 
 > Return this task to Moodle. There is a peer-review box. You will get a grade after you have reviewed three other submissions.
 
@@ -548,7 +549,7 @@ on the systems.
 You can also get ideas from the
 [xkcd comic about password strength](https://xkcd.com/936/).
 
-# Task 4: Keypad (bonus task)
+# Task 5: Keypad (bonus task)
 
 > You can return this task either to GitHub or as text submission to Moodle.
 
